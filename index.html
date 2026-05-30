@@ -1,21 +1,28 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>POS SmartAcc - Trợ Lý Kế Toán Dự Án</title>
+    <title>SmartAcc - Trợ Lý Kế Toán & Thuế Dự Án Cao Cấp</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Be Vietnam Pro', 'Inter', 'sans-serif'],
+                        sans: ['Be Vietnam Pro', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    boxShadow: {
+                        'premium': '0 10px 30px -10px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02)',
+                        'premium-hover': '0 20px 40px -15px rgba(99, 102, 241, 0.08), 0 1px 10px rgba(99, 102, 241, 0.03)',
+                        'glow-indigo': '0 0 20px rgba(99, 102, 241, 0.15)',
                     }
                 }
             }
@@ -24,83 +31,133 @@
     <style>
         /* Smooth Custom Scrollbar */
         ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+            width: 8px;
+            height: 8px;
         }
         ::-webkit-scrollbar-track {
-            background: #f1f5f9;
+            background: transparent;
+        }
+        .dark ::-webkit-scrollbar-track {
+            background: #0f172a;
         }
         ::-webkit-scrollbar-thumb {
             background: #cbd5e1;
-            border-radius: 4px;
+            border-radius: 99px;
+            border: 2px solid transparent;
+            background-clip: content-box;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border: 2px solid transparent;
+            background-clip: content-box;
         }
         ::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
+            border: 2px solid transparent;
+            background-clip: content-box;
         }
-        /* Custom styles for animations */
-        .toast-active {
-            transform: translateY(0);
-            opacity: 1;
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+            border: 2px solid transparent;
+            background-clip: content-box;
+        }
+        /* Custom animations & Utilities */
+        .tab-transition {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .theme-transition {
+            transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease;
+        }
+        /* Input spin buttons removal */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+<body class="bg-[#f8fafc] dark:bg-[#090d16] text-slate-800 dark:text-slate-200 font-sans min-h-screen flex flex-col theme-transition">
+
+    <!-- Premium Glow Background Decorators -->
+    <div class="absolute top-0 left-1/4 w-96 h-96 bg-indigo-200/20 dark:bg-indigo-900/10 rounded-full blur-[120px] pointer-events-none"></div>
+    <div class="absolute top-1/3 right-1/4 w-[400px] h-[400px] bg-emerald-200/10 dark:bg-emerald-900/5 rounded-full blur-[150px] pointer-events-none"></div>
 
     <!-- Header Section -->
-    <header class="bg-slate-900 text-white shadow-md border-b border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div class="flex items-center gap-3">
-                <div class="p-2.5 bg-indigo-600 rounded-xl shadow-lg shadow-indigo-500/30">
-                    <!-- Ledger Icon SVG -->
-                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                    </svg>
+    <header class="relative z-10 bg-white/70 dark:bg-slate-900/60 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 theme-transition sticky top-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col sm:flex-row justify-between items-center gap-4">
+            
+            <!-- Branding -->
+            <div class="flex items-center gap-3.5">
+                <div class="relative group">
+                    <div class="absolute -inset-0.5 bg-gradient-to-r from-indigo-600 to-emerald-500 rounded-xl blur opacity-30 group-hover:opacity-50 transition duration-1000"></div>
+                    <div class="relative p-2.5 bg-gradient-to-br from-indigo-600 to-indigo-700 dark:from-indigo-500 dark:to-indigo-600 rounded-xl shadow-md text-white">
+                        <!-- Ledger Premium Icon -->
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"></path>
+                        </svg>
+                    </div>
                 </div>
                 <div>
-                    <h1 class="text-xl font-bold tracking-tight flex items-center gap-2">
-                        SmartAcc <span class="text-xs bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 px-2 py-0.5 rounded font-mono">v1.3</span>
+                    <h1 class="text-lg font-extrabold tracking-tight flex items-center gap-2.5 dark:text-white">
+                        SmartAcc 
+                        <span class="text-[10px] bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900 px-2 py-0.5 rounded-full font-mono font-bold">PREMIUM v2.0</span>
                     </h1>
-                    <p class="text-xs text-slate-400">Trợ lý tiện ích tối ưu cho Kế toán Dự án</p>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Trợ lý tính toán & Pháp điển hóa Kế toán Dự án</p>
                 </div>
             </div>
             
-            <!-- Quick Currency Ticker & Stats -->
-            <div class="flex flex-wrap items-center gap-3 text-xs sm:text-sm">
-                <div class="bg-slate-800/80 border border-slate-700/50 rounded-lg px-3 py-1.5 flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span class="text-slate-300 font-medium">Tỷ giá tham chiếu USD/VND:</span>
-                    <input type="text" id="global-usd-rate" value="25.450" class="w-16 bg-transparent text-emerald-400 font-bold border-b border-dashed border-slate-600 text-center focus:outline-none focus:border-emerald-400" oninput="updateAllCalculations()">
+            <!-- Actions & Global Exchange Ticker -->
+            <div class="flex items-center gap-4 flex-wrap sm:flex-nowrap">
+                <!-- Global USD Rate Input -->
+                <div class="bg-slate-100/80 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60 rounded-xl px-3.5 py-1.5 flex items-center gap-2.5 shadow-sm">
+                    <span class="flex h-2 w-2 relative">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                    <span class="text-xs text-slate-500 dark:text-slate-400 font-semibold whitespace-nowrap">Tỷ giá USD/VND:</span>
+                    <input type="text" id="global-usd-rate" value="25.450" class="w-14 bg-transparent text-emerald-600 dark:text-emerald-400 font-bold border-b border-dashed border-slate-400 dark:border-slate-600 text-center focus:outline-none focus:border-emerald-500 font-mono text-sm" oninput="updateAllCalculations()">
                 </div>
+
+                <!-- Premium Theme Toggle -->
+                <button onclick="toggleTheme()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white border border-slate-200/60 dark:border-slate-700/50 transition-all duration-300" title="Chuyển đổi giao diện sáng/tối">
+                    <!-- Sun Icon (visible in dark mode) -->
+                    <svg id="theme-sun" class="w-4 h-4 hidden" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m0 13.5V21M4.22 4.22l1.58 1.58m12.42 12.42l1.58 1.58M3 12h2.25m13.5 0H21M4.22 19.78l1.58-1.58M17.62 6.38l1.58-1.58M12 7.5a4.5 4.5 0 110 9 4.5 4.5 0 010-9z"></path></svg>
+                    <!-- Moon Icon (visible in light mode) -->
+                    <svg id="theme-moon" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"></path></svg>
+                </button>
             </div>
         </div>
     </header>
 
-    <!-- Main Navigation Bar -->
-    <nav class="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
+    <!-- Navigation / Tabs bar -->
+    <nav class="sticky top-[61px] z-20 bg-slate-50/80 dark:bg-[#090d16]/80 backdrop-blur-md border-b border-slate-200/60 dark:border-slate-800/60 py-2 theme-transition">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex space-x-1 py-1.5 overflow-x-auto">
-                <button onclick="switchTab('tab-convert')" id="btn-tab-convert" class="nav-tab active flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 bg-indigo-50 text-indigo-700">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 11.37 7.31 16.5 3 19"></path></svg>
+            <div class="flex space-x-1.5 p-1 bg-slate-100 dark:bg-slate-900/80 rounded-2xl border border-slate-200/50 dark:border-slate-800/80 overflow-x-auto">
+                <button onclick="switchTab('tab-convert')" id="btn-tab-convert" class="nav-tab flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all duration-300 shadow-sm bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shrink-0">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 11.37 7.31 16.5 3 19"></path></svg>
                     Đọc Số Thành Chữ
                 </button>
-                <button onclick="switchTab('tab-vat')" id="btn-tab-vat" class="nav-tab flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l2-2 4 4m0-7l-3-3-3 3m2 8h7a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h3"></path></svg>
+                <button onclick="switchTab('tab-vat')" id="btn-tab-vat" class="nav-tab flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all duration-300 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 shrink-0">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 14l2-2 4 4m0-7l-3-3-3 3m2 8h7a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h3"></path></svg>
                     Tính Thuế & VAT
                 </button>
-                <button onclick="switchTab('tab-fct')" id="btn-tab-fct" class="nav-tab flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                <button onclick="switchTab('tab-fct')" id="btn-tab-fct" class="nav-tab flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all duration-300 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 shrink-0">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
                     Thuế Nhà Thầu (FCT)
                 </button>
-                <button onclick="switchTab('tab-rates')" id="btn-tab-rates" class="nav-tab flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    Quy Đổi Tiền Tệ
+                <button onclick="switchTab('tab-rates')" id="btn-tab-rates" class="nav-tab flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all duration-300 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 shrink-0">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Quy Đổi Ngoại Tệ - Dòng tiền
                 </button>
             </div>
         </div>
     </nav>
 
     <!-- Main Content Grid -->
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 relative z-10">
         
         <!-- ================= TAB 1: ĐỌC SỐ THÀNH CHỮ ================= -->
         <div id="tab-convert" class="tab-content space-y-6">
@@ -108,45 +165,45 @@
                 
                 <!-- Left Input Panel -->
                 <div class="lg:col-span-5 space-y-6">
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-5">
-                        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                            <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
-                                <span class="w-2.5 h-2.5 rounded-full bg-indigo-600"></span>
+                    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-premium hover:shadow-premium-hover border border-slate-200/60 dark:border-slate-800/80 p-6 space-y-5 transition-all duration-300">
+                        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+                            <h3 class="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-indigo-600 dark:bg-indigo-400 shadow-[0_0_10px_#6366f1]"></span>
                                 Nhập Số Tiền Cần Đọc
                             </h3>
-                            <button onclick="clearConvertInput()" class="text-xs text-slate-400 hover:text-red-500 transition-colors flex items-center gap-1 font-medium">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                Xoá trắng
+                            <button onclick="clearConvertInput()" class="text-xs text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition-colors flex items-center gap-1 font-medium bg-slate-50 dark:bg-slate-800/40 px-2 py-1 rounded-md">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                Xóa trắng
                             </button>
                         </div>
 
                         <!-- Number Input Field -->
                         <div class="space-y-2">
-                            <label for="num-input" class="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Số tiền bằng số</label>
-                            <div class="relative">
-                                <input type="text" id="num-input" placeholder="Nhập số tiền..." class="w-full text-xl font-bold font-mono tracking-tight text-slate-900 pl-4 pr-12 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition-all placeholder:text-slate-300 placeholder:font-sans" oninput="formatAndConvert(this)">
-                                <div class="absolute right-3 top-3.5 text-slate-400 font-semibold text-sm select-none" id="input-unit-badge">VND</div>
+                            <label for="num-input" class="block text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Số tiền bằng số</label>
+                            <div class="relative group">
+                                <input type="text" id="num-input" placeholder="Nhập số tiền..." class="w-full text-2xl font-extrabold font-mono tracking-tight text-slate-900 dark:text-white pl-4 pr-16 py-3.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus:bg-white dark:focus:bg-slate-950 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 dark:focus:border-indigo-500/70 transition-all placeholder:text-slate-300 dark:placeholder:text-slate-700 placeholder:font-sans" oninput="formatAndConvert(this)">
+                                <div class="absolute right-3.5 top-3.5 bg-indigo-100 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-400 px-2.5 py-1 rounded-lg text-[10px] font-extrabold select-none" id="input-unit-badge">VND</div>
                             </div>
-                            <div id="live-formatted-preview" class="text-xs font-mono text-indigo-600 font-semibold pl-1 min-h-[16px]"></div>
+                            <div id="live-formatted-preview" class="text-xs font-mono text-indigo-600 dark:text-indigo-400 font-bold pl-1 min-h-[16px]"></div>
                         </div>
 
                         <!-- Configuration Options -->
-                        <div class="space-y-4 pt-2 border-t border-slate-100">
-                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Cấu hình Đọc Số Tiếng Việt</h4>
+                        <div class="space-y-4 pt-3 border-t border-slate-100 dark:border-slate-800">
+                            <h4 class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Cấu hình Đọc Số Tiếng Việt</h4>
                             
                             <!-- Regional Dialect Toggle -->
-                            <div class="grid grid-cols-2 gap-2">
-                                <label class="border border-slate-200 rounded-xl p-3 flex flex-col gap-1 cursor-pointer hover:border-indigo-300 transition-all [&:has(input:checked)]:border-indigo-600 [&:has(input:checked)]:bg-indigo-50/30">
+                            <div class="grid grid-cols-2 gap-2.5">
+                                <label class="border border-slate-200 dark:border-slate-800 rounded-xl p-3 flex flex-col gap-1 cursor-pointer hover:border-indigo-300 dark:hover:border-indigo-900 transition-all [&:has(input:checked)]:border-indigo-600 dark:[&:has(input:checked)]:border-indigo-500 [&:has(input:checked)]:bg-indigo-50/20 dark:[&:has(input:checked)]:bg-indigo-950/10">
                                     <div class="flex items-center gap-2">
                                         <input type="radio" name="dialect" value="north" checked class="w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-500" onchange="runConversion()">
-                                        <span class="text-xs font-bold text-slate-700">Kiểu Miền Bắc</span>
+                                        <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Kiểu Miền Bắc</span>
                                     </div>
                                     <span class="text-[10px] text-slate-400 pl-6">Sử dụng: "Nghìn", "Linh"</span>
                                 </label>
-                                <label class="border border-slate-200 rounded-xl p-3 flex flex-col gap-1 cursor-pointer hover:border-indigo-300 transition-all [&:has(input:checked)]:border-indigo-600 [&:has(input:checked)]:bg-indigo-50/30">
+                                <label class="border border-slate-200 dark:border-slate-800 rounded-xl p-3 flex flex-col gap-1 cursor-pointer hover:border-indigo-300 dark:hover:border-indigo-900 transition-all [&:has(input:checked)]:border-indigo-600 dark:[&:has(input:checked)]:border-indigo-500 [&:has(input:checked)]:bg-indigo-50/20 dark:[&:has(input:checked)]:bg-indigo-950/10">
                                     <div class="flex items-center gap-2">
                                         <input type="radio" name="dialect" value="south" class="w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-500" onchange="runConversion()">
-                                        <span class="text-xs font-bold text-slate-700">Kiểu Miền Nam</span>
+                                        <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Kiểu Miền Nam</span>
                                     </div>
                                     <span class="text-[10px] text-slate-400 pl-6">Sử dụng: "Ngàn", "Lẻ"</span>
                                 </label>
@@ -155,8 +212,8 @@
                             <!-- Currency Suffix Options -->
                             <div class="grid grid-cols-2 gap-3">
                                 <div>
-                                    <label class="block text-xs font-semibold text-slate-500 mb-1.5">Hậu tố tiền tệ (VIET)</label>
-                                    <select id="vn-currency-suffix" class="w-full bg-slate-50 border border-slate-200 text-xs rounded-lg p-2 focus:ring-2 focus:ring-indigo-200 focus:outline-none" onchange="runConversion()">
+                                    <label class="block text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1.5">Hậu tố (VIỆT)</label>
+                                    <select id="vn-currency-suffix" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-semibold rounded-lg p-2.5 text-slate-700 dark:text-slate-300 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none" onchange="runConversion()">
                                         <option value="đồng chẵn">đồng chẵn</option>
                                         <option value="đồng">đồng</option>
                                         <option value="đồng y">đồng y</option>
@@ -166,8 +223,8 @@
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-semibold text-slate-500 mb-1.5">Hậu tố tiền tệ (ENG)</label>
-                                    <select id="en-currency-suffix" class="w-full bg-slate-50 border border-slate-200 text-xs rounded-lg p-2 focus:ring-2 focus:ring-indigo-200 focus:outline-none" onchange="runConversion()">
+                                    <label class="block text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1.5">Hậu tố (ENGLISH)</label>
+                                    <select id="en-currency-suffix" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-semibold rounded-lg p-2.5 text-slate-700 dark:text-slate-300 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none" onchange="runConversion()">
                                         <option value="Vietnam dongs only">Vietnam dongs only</option>
                                         <option value="US Dollars only">US Dollars only</option>
                                         <option value="Euros only">Euros only</option>
@@ -180,17 +237,17 @@
 
                             <!-- Text Formatting Options -->
                             <div>
-                                <label class="block text-xs font-semibold text-slate-500 mb-1.5">Định dạng chữ cái</label>
-                                <div class="grid grid-cols-3 gap-1.5 text-xs">
-                                    <label class="border border-slate-200 rounded-lg p-2 text-center cursor-pointer hover:border-slate-300 [&:has(input:checked)]:border-indigo-600 [&:has(input:checked)]:text-indigo-600 [&:has(input:checked)]:bg-indigo-50/20">
+                                <label class="block text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1.5">Định dạng chữ cái</label>
+                                <div class="grid grid-cols-3 gap-1.5 text-[11px] font-bold">
+                                    <label class="border border-slate-200 dark:border-slate-800 rounded-lg p-2.5 text-center cursor-pointer hover:border-slate-300 dark:hover:border-slate-700 [&:has(input:checked)]:border-indigo-600 dark:[&:has(input:checked)]:border-indigo-500 [&:has(input:checked)]:text-indigo-600 dark:[&:has(input:checked)]:text-indigo-400 [&:has(input:checked)]:bg-indigo-50/20 dark:[&:has(input:checked)]:bg-indigo-950/10">
                                         <input type="radio" name="text-case" value="sentence" checked class="hidden" onchange="runConversion()">
                                         Viết hoa đầu
                                     </label>
-                                    <label class="border border-slate-200 rounded-lg p-2 text-center cursor-pointer hover:border-slate-300 [&:has(input:checked)]:border-indigo-600 [&:has(input:checked)]:text-indigo-600 [&:has(input:checked)]:bg-indigo-50/20">
+                                    <label class="border border-slate-200 dark:border-slate-800 rounded-lg p-2.5 text-center cursor-pointer hover:border-slate-300 dark:hover:border-slate-700 [&:has(input:checked)]:border-indigo-600 dark:[&:has(input:checked)]:border-indigo-500 [&:has(input:checked)]:text-indigo-600 dark:[&:has(input:checked)]:text-indigo-400 [&:has(input:checked)]:bg-indigo-50/20 dark:[&:has(input:checked)]:bg-indigo-950/10">
                                         <input type="radio" name="text-case" value="upper" class="hidden" onchange="runConversion()">
-                                        VIẾT HOA HẾT
+                                        VIẾT HOA
                                     </label>
-                                    <label class="border border-slate-200 rounded-lg p-2 text-center cursor-pointer hover:border-slate-300 [&:has(input:checked)]:border-indigo-600 [&:has(input:checked)]:text-indigo-600 [&:has(input:checked)]:bg-indigo-50/20">
+                                    <label class="border border-slate-200 dark:border-slate-800 rounded-lg p-2.5 text-center cursor-pointer hover:border-slate-300 dark:hover:border-slate-700 [&:has(input:checked)]:border-indigo-600 dark:[&:has(input:checked)]:border-indigo-500 [&:has(input:checked)]:text-indigo-600 dark:[&:has(input:checked)]:text-indigo-400 [&:has(input:checked)]:bg-indigo-50/20 dark:[&:has(input:checked)]:bg-indigo-950/10">
                                         <input type="radio" name="text-case" value="lower" class="hidden" onchange="runConversion()">
                                         viết thường
                                     </label>
@@ -199,11 +256,11 @@
                         </div>
 
                         <!-- Decimal setting -->
-                        <div class="flex items-center justify-between border-t border-slate-100 pt-3 text-xs">
-                            <span class="font-semibold text-slate-500">Cho phép số lẻ (thập phân)</span>
-                            <label class="relative inline-flex items-center cursor-pointer">
+                        <div class="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-3 text-xs">
+                            <span class="font-bold text-slate-500 dark:text-slate-400">Cho phép phần thập phân (số lẻ)</span>
+                            <label class="relative inline-flex items-center cursor-pointer select-none">
                                 <input type="checkbox" id="allow-decimal" checked class="sr-only peer" onchange="runConversion()">
-                                <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
+                                <div class="w-10 h-6 bg-slate-200 dark:bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 dark:after:border-slate-600 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600 dark:peer-checked:bg-indigo-500"></div>
                             </label>
                         </div>
                     </div>
@@ -211,52 +268,54 @@
 
                 <!-- Right Output Panel -->
                 <div class="lg:col-span-7 space-y-6">
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col h-full justify-between">
+                    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-premium hover:shadow-premium-hover border border-slate-200/60 dark:border-slate-800/80 p-6 flex flex-col h-full justify-between transition-all duration-300">
                         <div class="space-y-6">
-                            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-indigo-600"></span>
+                            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+                                <h3 class="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-indigo-600 dark:bg-indigo-400 shadow-[0_0_10px_#6366f1]"></span>
                                     Kết Quả Chuyển Đổi Song Ngữ
                                 </h3>
-                                <span class="text-xs bg-slate-100 text-slate-600 font-semibold px-2 py-1 rounded-md" id="status-badge">Đang đợi số liệu...</span>
+                                <span class="text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-bold px-2.5 py-1 rounded-md" id="status-badge">Đang đợi số liệu...</span>
                             </div>
 
                             <!-- Vietnamese Output Card -->
-                            <div class="space-y-2 bg-indigo-50/30 rounded-xl p-5 border border-indigo-100/50">
+                            <div class="space-y-2 bg-indigo-50/20 dark:bg-indigo-950/10 rounded-2xl p-5 border border-indigo-100/50 dark:border-indigo-950/50 group relative">
                                 <div class="flex justify-between items-center">
-                                    <div class="flex items-center gap-2 text-xs font-bold text-indigo-700 tracking-wider uppercase">
-                                        <span class="w-1.5 h-3 bg-indigo-600 rounded-full"></span>
+                                    <div class="flex items-center gap-2 text-[10px] font-bold text-indigo-700 dark:text-indigo-400 tracking-wider uppercase">
+                                        <span class="w-1.5 h-3 bg-indigo-600 dark:bg-indigo-500 rounded-full"></span>
                                         Tiếng Việt (Vietnamese)
                                     </div>
-                                    <button onclick="copyToClipboard('vi-output')" class="flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-800 font-semibold bg-white px-2.5 py-1 rounded-md border border-indigo-200 hover:border-indigo-400 shadow-sm transition-all">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
-                                        Copy
+                                    <button onclick="copyToClipboard('vi-output', this)" class="relative flex items-center gap-1.5 text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-200 font-semibold bg-white dark:bg-slate-900 px-3 py-1.5 rounded-lg border border-indigo-200 dark:border-slate-850 hover:border-indigo-400 shadow-sm transition-all duration-200">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                                        <span class="copy-text">Copy</span>
                                     </button>
                                 </div>
-                                <div id="vi-output" class="text-base font-medium text-slate-800 leading-relaxed min-h-[48px] select-all pt-2">Vui lòng nhập số tiền để đọc.</div>
+                                <div id="vi-output" class="text-base font-semibold text-slate-800 dark:text-slate-200 leading-relaxed min-h-[48px] select-all pt-2">Vui lòng nhập số tiền để dịch.</div>
                             </div>
 
                             <!-- English Output Card -->
-                            <div class="space-y-2 bg-emerald-50/20 rounded-xl p-5 border border-emerald-100/50">
+                            <div class="space-y-2 bg-emerald-50/15 dark:bg-emerald-950/5 rounded-2xl p-5 border border-emerald-100/30 dark:border-emerald-950/30 group relative">
                                 <div class="flex justify-between items-center">
-                                    <div class="flex items-center gap-2 text-xs font-bold text-emerald-700 tracking-wider uppercase">
-                                        <span class="w-1.5 h-3 bg-emerald-600 rounded-full"></span>
+                                    <div class="flex items-center gap-2 text-[10px] font-bold text-emerald-700 dark:text-emerald-400 tracking-wider uppercase">
+                                        <span class="w-1.5 h-3 bg-emerald-600 dark:bg-emerald-500 rounded-full"></span>
                                         Tiếng Anh (English)
                                     </div>
-                                    <button onclick="copyToClipboard('en-output')" class="flex items-center gap-1 text-xs text-emerald-600 hover:text-emerald-800 font-semibold bg-white px-2.5 py-1 rounded-md border border-emerald-200 hover:border-emerald-400 shadow-sm transition-all">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
-                                        Copy
+                                    <button onclick="copyToClipboard('en-output', this)" class="relative flex items-center gap-1.5 text-xs text-emerald-600 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-200 font-semibold bg-white dark:bg-slate-900 px-3 py-1.5 rounded-lg border border-emerald-200 dark:border-slate-850 hover:border-emerald-400 shadow-sm transition-all duration-200">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                                        <span class="copy-text">Copy</span>
                                     </button>
                                 </div>
-                                <div id="en-output" class="text-base font-medium text-slate-800 leading-relaxed min-h-[48px] select-all pt-2">Please enter an amount to read.</div>
+                                <div id="en-output" class="text-base font-semibold text-slate-800 dark:text-slate-200 leading-relaxed min-h-[48px] select-all pt-2">Please enter an amount to translate.</div>
                             </div>
                         </div>
 
-                        <!-- Mini quick instructions helper for contract -->
-                        <div class="mt-6 border-t border-slate-100 pt-4 flex gap-3 items-start text-xs text-slate-400">
-                            <svg class="w-5 h-5 text-indigo-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <!-- Helper Tip -->
+                        <div class="mt-6 border-t border-slate-100 dark:border-slate-800 pt-4 flex gap-3 items-start text-xs text-slate-400">
+                            <div class="p-1 bg-indigo-50 dark:bg-indigo-950/50 rounded text-indigo-500">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </div>
                             <div>
-                                <span class="font-bold text-slate-600">Mẹo kế toán:</span> Bạn có thể đổi nhanh hậu tố tiền tệ để khớp với các điều khoản thanh toán trong Hợp đồng kinh tế của dự án. Nhấn <kbd class="px-1.5 py-0.5 bg-slate-100 border border-slate-200 rounded text-slate-600 font-mono font-bold">Copy</kbd> để sao chép thẳng kết quả vào Excel hoặc Word mà không lo lỗi khoảng trắng.
+                                <span class="font-bold text-slate-600 dark:text-slate-300">Mẹo nghiệp vụ:</span> Đọc số tiền chẵn bằng cả song ngữ giúp khớp cấu trúc Hợp đồng ngoại thương / Biên bản giải ngân dự án một cách nhanh nhất.
                             </div>
                         </div>
                     </div>
@@ -265,27 +324,26 @@
             </div>
 
             <!-- Session Conversion History -->
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-                <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
-                    <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-premium border border-slate-200/60 dark:border-slate-800/80 p-6 transition-all duration-300">
+                <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3 mb-4">
+                    <h3 class="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         Lịch Sử Chuyển Đổi Trong Phiên
                     </h3>
-                    <button onclick="clearHistory()" class="text-xs text-slate-400 hover:text-red-500 transition-colors font-medium">Xoá lịch sử</button>
+                    <button onclick="clearHistory()" class="text-xs text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition-colors font-semibold">Xóa lịch sử</button>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs border-collapse">
                         <thead>
-                            <tr class="text-slate-400 font-semibold uppercase tracking-wider border-b border-slate-100">
+                            <tr class="text-slate-400 font-bold uppercase tracking-wider border-b border-slate-100 dark:border-slate-800">
                                 <th class="pb-3 w-1/5">Thời gian</th>
                                 <th class="pb-3 w-1/5">Số tiền bằng số</th>
                                 <th class="pb-3 w-3/5">Đọc Tiếng Việt</th>
                             </tr>
                         </thead>
-                        <tbody id="history-rows" class="divide-y divide-slate-100 font-medium text-slate-700">
-                            <!-- Rows will be injected by JavaScript -->
+                        <tbody id="history-rows" class="divide-y divide-slate-100 dark:divide-slate-800 font-medium text-slate-700 dark:text-slate-300">
                             <tr id="empty-history-row">
-                                <td colspan="3" class="py-4 text-center text-slate-400">Chưa có lịch sử chuyển đổi nào trong phiên này.</td>
+                                <td colspan="3" class="py-6 text-center text-slate-400 dark:text-slate-500">Chưa có hoạt động chuyển đổi nào trong phiên làm việc này.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -295,35 +353,35 @@
 
         <!-- ================= TAB 2: TÍNH THUẾ & VAT ================= -->
         <div id="tab-vat" class="tab-content hidden space-y-6">
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-                <h3 class="text-lg font-bold text-slate-900 border-b border-slate-100 pb-4 mb-6 flex items-center gap-2">
-                    <span class="p-1.5 bg-emerald-50 rounded-lg text-emerald-600">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l2-2 4 4m0-7l-3-3-3 3m2 8h7a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h3"></path></svg>
+            <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-premium hover:shadow-premium-hover border border-slate-200/60 dark:border-slate-800/80 p-6 transition-all duration-300">
+                <h3 class="text-base font-bold text-slate-900 dark:text-slate-100 border-b border-slate-100 dark:border-slate-800 pb-4 mb-6 flex items-center gap-2.5">
+                    <span class="p-1.5 bg-emerald-50 dark:bg-emerald-950/50 rounded-lg text-emerald-600 dark:text-emerald-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 14l2-2 4 4m0-7l-3-3-3 3m2 8h7a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h3"></path></svg>
                     </span>
-                    Bảng Tính Nhanh Thuế Suất Dự Án (Hai Chiều)
+                    Bảng Tính Thuế Suất Dự Án Song Chiều
                 </h3>
 
-                <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
                     <!-- Calculator Inputs -->
-                    <div class="md:col-span-5 space-y-5">
+                    <div class="lg:col-span-5 space-y-6">
                         
                         <!-- Direction Selection -->
                         <div>
-                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Phương thức tính thuế</label>
-                            <div class="grid grid-cols-2 gap-2">
-                                <label class="border border-slate-200 rounded-xl p-3 flex flex-col gap-1 cursor-pointer hover:border-indigo-300 transition-all [&:has(input:checked)]:border-indigo-600 [&:has(input:checked)]:bg-indigo-50/30">
+                            <label class="block text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2.5">Phương thức quy đổi thuế</label>
+                            <div class="grid grid-cols-2 gap-3">
+                                <label class="border border-slate-200 dark:border-slate-800 rounded-xl p-3 flex flex-col gap-1.5 cursor-pointer hover:border-indigo-300 dark:hover:border-indigo-900 transition-all [&:has(input:checked)]:border-indigo-600 dark:[&:has(input:checked)]:border-indigo-500 [&:has(input:checked)]:bg-indigo-50/20 dark:[&:has(input:checked)]:bg-indigo-950/10">
                                     <div class="flex items-center gap-2">
                                         <input type="radio" name="vat-direction" value="forward" checked class="w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-500" onchange="toggleVatDirection()">
-                                        <span class="text-xs font-bold text-slate-700">Giá Trước Thuế (Net)</span>
+                                        <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Giá Chưa Thuế (NET)</span>
                                     </div>
-                                    <span class="text-[10px] text-slate-400 pl-6">Tính thêm thuế VAT từ Net</span>
+                                    <span class="text-[10px] text-slate-400 dark:text-slate-500 pl-6">Tính thêm thuế GTGT</span>
                                 </label>
-                                <label class="border border-slate-200 rounded-xl p-3 flex flex-col gap-1 cursor-pointer hover:border-indigo-300 transition-all [&:has(input:checked)]:border-indigo-600 [&:has(input:checked)]:bg-indigo-50/30">
+                                <label class="border border-slate-200 dark:border-slate-800 rounded-xl p-3 flex flex-col gap-1.5 cursor-pointer hover:border-indigo-300 dark:hover:border-indigo-900 transition-all [&:has(input:checked)]:border-indigo-600 dark:[&:has(input:checked)]:border-indigo-500 [&:has(input:checked)]:bg-indigo-50/20 dark:[&:has(input:checked)]:bg-indigo-950/10">
                                     <div class="flex items-center gap-2">
                                         <input type="radio" name="vat-direction" value="backward" class="w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-500" onchange="toggleVatDirection()">
-                                        <span class="text-xs font-bold text-slate-700">Giá Sau Thuế (Gross)</span>
+                                        <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Giá Gồm Thuế (GROSS)</span>
                                     </div>
-                                    <span class="text-[10px] text-slate-400 pl-6">Trích ngược thuế từ tổng số tiền</span>
+                                    <span class="text-[10px] text-slate-400 dark:text-slate-500 pl-6">Trích ngược từ tổng chi</span>
                                 </label>
                             </div>
                         </div>
@@ -331,76 +389,77 @@
                         <!-- Value inputs -->
                         <div class="space-y-4">
                             <!-- Net Input (Before Tax) -->
-                            <div id="container-net" class="space-y-1">
-                                <label for="vat-net" class="block text-xs font-semibold text-slate-500">Doanh số chưa thuế (Giá NET)</label>
+                            <div id="container-net" class="space-y-1.5">
+                                <label for="vat-net" class="block text-xs font-semibold text-slate-500">Doanh số trước thuế (Giá NET)</label>
                                 <div class="relative">
-                                    <input type="text" id="vat-net" placeholder="Nhập giá trước thuế..." class="w-full text-base font-bold font-mono text-slate-900 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 transition-all" oninput="calculateVat('net')">
-                                    <span class="absolute right-3 top-3 text-xs text-slate-400 font-bold select-none">VND</span>
+                                    <input type="text" id="vat-net" placeholder="Nhập giá Net..." class="w-full text-base font-bold font-mono text-slate-900 dark:text-white px-4 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus:bg-white dark:focus:bg-slate-950 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all" oninput="calculateVat('net')">
+                                    <span class="absolute right-3.5 top-3.5 text-xs text-slate-400 font-bold select-none">VND</span>
                                 </div>
                             </div>
 
-                            <!-- VAT Rate -->
+                            <!-- VAT Rate Selector -->
                             <div>
-                                <label class="block text-xs font-semibold text-slate-500 mb-2">Thuế suất VAT (%)</label>
+                                <label class="block text-xs font-semibold text-slate-500 mb-2.5">Thuế suất GTGT áp dụng</label>
                                 <div class="grid grid-cols-4 gap-2">
-                                    <button onclick="setVatRate(5)" id="btn-vat-5" class="py-2 border border-slate-200 rounded-lg text-xs font-bold hover:bg-indigo-50 hover:border-indigo-200 transition-all">5%</button>
-                                    <button onclick="setVatRate(8)" id="btn-vat-8" class="py-2 border border-indigo-200 bg-indigo-50 rounded-lg text-xs font-bold text-indigo-600 shadow-sm transition-all">8%</button>
-                                    <button onclick="setVatRate(10)" id="btn-vat-10" class="py-2 border border-slate-200 rounded-lg text-xs font-bold hover:bg-indigo-50 hover:border-indigo-200 transition-all">10%</button>
+                                    <button onclick="setVatRate(5)" id="btn-vat-5" class="py-2.5 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-800/80 text-slate-700 dark:text-slate-300 transition-all">5%</button>
+                                    <button onclick="setVatRate(8)" id="btn-vat-8" class="py-2.5 border border-indigo-200 dark:border-indigo-900 bg-indigo-50 dark:bg-indigo-950/50 rounded-xl text-xs font-bold text-indigo-600 dark:text-indigo-400 shadow-sm transition-all">8%</button>
+                                    <button onclick="setVatRate(10)" id="btn-vat-10" class="py-2.5 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-800/80 text-slate-700 dark:text-slate-300 transition-all">10%</button>
                                     <div class="relative">
-                                        <input type="number" id="vat-custom-rate" value="10" min="0" max="100" placeholder="Tự nhập" class="w-full h-full text-center border border-slate-200 rounded-lg text-xs font-bold bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500" oninput="setVatCustomRate(this.value)">
+                                        <input type="number" id="vat-custom-rate" value="10" min="0" max="100" placeholder="Tự nhập" class="w-full h-full text-center border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-bold bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-slate-800 dark:text-slate-200" oninput="setVatCustomRate(this.value)">
+                                        <span class="absolute right-2 top-2.5 text-[10px] text-slate-400 font-bold">%</span>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Gross Input (After Tax) -->
-                            <div id="container-gross" class="space-y-1 opacity-50">
+                            <div id="container-gross" class="space-y-1.5 opacity-50">
                                 <label for="vat-gross" class="block text-xs font-semibold text-slate-500">Tổng thanh toán gồm thuế (Giá GROSS)</label>
                                 <div class="relative">
-                                    <input type="text" id="vat-gross" disabled placeholder="Sẽ tự động tính..." class="w-full text-base font-bold font-mono text-slate-900 px-4 py-2.5 bg-slate-100 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 transition-all" oninput="calculateVat('gross')">
-                                    <span class="absolute right-3 top-3 text-xs text-slate-400 font-bold select-none">VND</span>
+                                    <input type="text" id="vat-gross" disabled placeholder="Hệ thống tự quy đổi..." class="w-full text-base font-bold font-mono text-slate-900 dark:text-white px-4 py-3 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus:bg-white dark:focus:bg-slate-950 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all" oninput="calculateVat('gross')">
+                                    <span class="absolute right-3.5 top-3.5 text-xs text-slate-400 font-bold select-none">VND</span>
                                 </div>
                             </div>
                         </div>
 
                     </div>
 
-                    <!-- Calculator Outputs & Copy Summary -->
-                    <div class="md:col-span-7 bg-slate-50 border border-slate-200 rounded-2xl p-6 flex flex-col justify-between">
+                    <!-- Calculator Outputs & Visual Breakdown -->
+                    <div class="lg:col-span-7 bg-slate-50/70 dark:bg-slate-950/40 border border-slate-200/60 dark:border-slate-800/80 rounded-2xl p-6 flex flex-col justify-between transition-all duration-300">
                         <div class="space-y-4">
-                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-200 pb-2">Bảng Phân Tích Cơ Cấu Dòng Tiền</h4>
+                            <h4 class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider border-b border-slate-200 dark:border-slate-800 pb-2">Cơ Cấu Dòng Tiền & Thuế</h4>
                             
-                            <div class="space-y-2.5">
-                                <div class="flex justify-between items-center text-sm py-1.5 border-b border-dashed border-slate-200">
-                                    <span class="text-slate-500">Giá trị trước thuế (NET):</span>
-                                    <span class="font-mono font-bold text-slate-900 text-base" id="res-net">0 ₫</span>
+                            <div class="space-y-3">
+                                <div class="flex justify-between items-center text-sm py-2 border-b border-dashed border-slate-200 dark:border-slate-800">
+                                    <span class="text-slate-500 dark:text-slate-400 font-medium">Giá trị cốt lõi trước thuế (NET):</span>
+                                    <span class="font-mono font-bold text-slate-900 dark:text-white text-base" id="res-net">0 ₫</span>
                                 </div>
-                                <div class="flex justify-between items-center text-sm py-1.5 border-b border-dashed border-slate-200">
-                                    <span class="text-slate-500 flex items-center gap-1">
-                                        Thuế VAT lũy tiến (<span id="res-rate-label">8%</span>):
+                                <div class="flex justify-between items-center text-sm py-2 border-b border-dashed border-slate-200 dark:border-slate-800">
+                                    <span class="text-slate-500 dark:text-slate-400 font-medium flex items-center gap-1.5">
+                                        Giá trị thuế gia tăng GTGT (<span id="res-rate-label" class="text-emerald-600 dark:text-emerald-400 font-bold">8%</span>):
                                     </span>
-                                    <span class="font-mono font-semibold text-rose-600" id="res-vat-amount">0 ₫</span>
+                                    <span class="font-mono font-bold text-rose-500 dark:text-rose-400" id="res-vat-amount">0 ₫</span>
                                 </div>
-                                <div class="flex justify-between items-center text-base py-2.5 border-b border-slate-200">
-                                    <span class="font-bold text-slate-700">Tổng cộng (GROSS):</span>
-                                    <span class="font-mono font-extrabold text-indigo-700 text-lg" id="res-gross">0 ₫</span>
+                                <div class="flex justify-between items-center text-base py-3 border-b border-slate-200 dark:border-slate-800">
+                                    <span class="font-extrabold text-slate-700 dark:text-slate-300">Tổng thanh toán (GROSS):</span>
+                                    <span class="font-mono font-black text-indigo-600 dark:text-indigo-400 text-lg" id="res-gross">0 ₫</span>
                                 </div>
                             </div>
 
                             <!-- Read Out in Words Section -->
-                            <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-2">
-                                <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Đọc số tiền tổng thanh toán bằng chữ:</div>
-                                <div id="res-words" class="text-xs font-medium text-slate-700 leading-relaxed italic">Không đồng chẵn.</div>
+                            <div class="bg-white dark:bg-slate-900 p-4.5 rounded-xl border border-slate-200 dark:border-slate-850 space-y-2">
+                                <div class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Đọc tổng tiền thanh toán:</div>
+                                <div id="res-words" class="text-xs font-semibold text-slate-700 dark:text-slate-300 leading-relaxed italic">Không đồng chẵn.</div>
                             </div>
                         </div>
 
-                        <!-- Utility Buttons to export -->
-                        <div class="flex gap-2 mt-6">
-                            <button onclick="copyVatResult()" class="flex-grow flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs py-2.5 px-4 rounded-xl shadow-lg shadow-indigo-500/10 transition-all">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                        <!-- Utility Actions -->
+                        <div class="flex gap-3 mt-6">
+                            <button onclick="copyVatResult()" class="flex-grow flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs py-3 px-4 rounded-xl shadow-lg shadow-indigo-500/10 dark:shadow-none transition-all duration-300">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
                                 Sao chép chi tiết tính thuế
                             </button>
-                            <button onclick="sendVatToReader()" class="bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 text-indigo-700 font-semibold text-xs py-2.5 px-4 rounded-xl transition-all flex items-center gap-1.5" title="Chuyển tổng tiền sang Tab đọc số tiền để tuỳ biến sâu hơn">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                            <button onclick="sendVatToReader()" class="bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/40 dark:hover:bg-indigo-950/80 text-indigo-700 dark:text-indigo-400 font-bold text-xs py-3 px-4 rounded-xl border border-indigo-100 dark:border-indigo-900 transition-all duration-300 flex items-center gap-1.5" title="Đẩy tổng tiền sang tab đọc chữ chuyên sâu">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                                 Đọc chuyên sâu
                             </button>
                         </div>
@@ -411,149 +470,149 @@
 
         <!-- ================= TAB 3: THUẾ NHÀ THẦU (FCT) ================= -->
         <div id="tab-fct" class="tab-content hidden space-y-6">
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-                <h3 class="text-lg font-bold text-slate-900 border-b border-slate-100 pb-4 mb-6 flex items-center gap-2">
-                    <span class="p-1.5 bg-indigo-50 rounded-lg text-indigo-600">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+            <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-premium border border-slate-200/60 dark:border-slate-800/80 p-6 transition-all duration-300">
+                <h3 class="text-base font-bold text-slate-900 dark:text-slate-100 border-b border-slate-100 dark:border-slate-800 pb-4 mb-6 flex items-center gap-2.5">
+                    <span class="p-1.5 bg-indigo-50 dark:bg-indigo-950/50 rounded-lg text-indigo-600 dark:text-indigo-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
                     </span>
-                    Bảng Tính Thuế Nhà Thầu Nước Ngoài (FCT) - Thông tư 103/2014/TT-BTC
+                    Bảng Tính Thuế Nhà Thầu Nước Ngoài (FCT) - Cập nhật Thông tư 103/2014/TT-BTC
                 </h3>
 
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
                     <!-- Calculator Inputs -->
                     <div class="lg:col-span-5 space-y-5">
                         
-                        <!-- Contract Type / Method selection -->
+                        <!-- Contract Type Selection -->
                         <div>
-                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Loại hợp đồng ký kết</label>
-                            <div class="grid grid-cols-2 gap-2">
-                                <label class="border border-slate-200 rounded-xl p-3 flex flex-col gap-1 cursor-pointer hover:border-indigo-300 transition-all [&:has(input:checked)]:border-indigo-600 [&:has(input:checked)]:bg-indigo-50/30">
+                            <label class="block text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2.5">Loại hợp đồng ký kết (Method)</label>
+                            <div class="grid grid-cols-2 gap-3">
+                                <label class="border border-slate-200 dark:border-slate-800 rounded-xl p-3 flex flex-col gap-1.5 cursor-pointer hover:border-indigo-300 dark:hover:border-indigo-900 transition-all [&:has(input:checked)]:border-indigo-600 dark:[&:has(input:checked)]:border-indigo-500 [&:has(input:checked)]:bg-indigo-50/20 dark:[&:has(input:checked)]:bg-indigo-950/10">
                                     <div class="flex items-center gap-2">
                                         <input type="radio" name="fct-method" value="net" checked class="w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-500" onchange="calculateFct()">
-                                        <span class="text-xs font-bold text-slate-700">Giá NET (CĐT nộp thuế)</span>
+                                        <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Giá NET (CĐT nộp thuế)</span>
                                     </div>
-                                    <span class="text-[10px] text-slate-400 pl-6">Gross-up (Quy đổi ngược lên Gross)</span>
+                                    <span class="text-[10px] text-slate-400 dark:text-slate-500 pl-6">Hệ thống thực hiện Gross-up ngược</span>
                                 </label>
-                                <label class="border border-slate-200 rounded-xl p-3 flex flex-col gap-1 cursor-pointer hover:border-indigo-300 transition-all [&:has(input:checked)]:border-indigo-600 [&:has(input:checked)]:bg-indigo-50/30">
+                                <label class="border border-slate-200 dark:border-slate-800 rounded-xl p-3 flex flex-col gap-1.5 cursor-pointer hover:border-indigo-300 dark:hover:border-indigo-900 transition-all [&:has(input:checked)]:border-indigo-600 dark:[&:has(input:checked)]:border-indigo-500 [&:has(input:checked)]:bg-indigo-50/20 dark:[&:has(input:checked)]:bg-indigo-950/10">
                                     <div class="flex items-center gap-2">
                                         <input type="radio" name="fct-method" value="gross" class="w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-500" onchange="calculateFct()">
-                                        <span class="text-xs font-bold text-slate-700">Giá GROSS (Nhà thầu chịu)</span>
+                                        <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Giá GROSS (Nhà thầu chịu)</span>
                                     </div>
-                                    <span class="text-[10px] text-slate-400 pl-6">Direct (Trực tiếp khấu trừ từ Gross)</span>
+                                    <span class="text-[10px] text-slate-400 dark:text-slate-500 pl-6">Khấu trừ trực tiếp từ giá Gross</span>
                                 </label>
                             </div>
                         </div>
 
-                        <!-- Amount input -->
-                        <div class="space-y-1">
-                            <label for="fct-amount" class="block text-xs font-semibold text-slate-500" id="label-fct-amount">Giá trị thanh toán thực nhận (Net)</label>
+                        <!-- Amount Input -->
+                        <div class="space-y-1.5">
+                            <label for="fct-amount" class="block text-xs font-semibold text-slate-500" id="label-fct-amount">Giá trị thanh toán thực tế</label>
                             <div class="relative">
-                                <input type="text" id="fct-amount" placeholder="Nhập giá trị hợp đồng..." class="w-full text-base font-bold font-mono text-slate-900 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 transition-all" oninput="formatAndCalculateFct(this)">
-                                <span class="absolute right-3 top-3 text-xs text-slate-400 font-bold select-none">VND</span>
+                                <input type="text" id="fct-amount" placeholder="Nhập giá trị hợp đồng..." class="w-full text-base font-bold font-mono text-slate-900 dark:text-white px-4 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus:bg-white dark:focus:bg-slate-950 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all" oninput="formatAndCalculateFct(this)">
+                                <span class="absolute right-3.5 top-3.5 text-xs text-slate-400 font-bold select-none">VND</span>
                             </div>
                         </div>
 
-                        <!-- Sector Selection (Preset Taxes) -->
-                        <div class="space-y-1">
-                            <label for="fct-sector" class="block text-xs font-semibold text-slate-500">Ngành nghề kinh doanh / Tỷ lệ thuế suất</label>
-                            <select id="fct-sector" class="w-full bg-slate-50 border border-slate-200 text-xs rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-200 focus:outline-none" onchange="handleFctSectorChange()">
+                        <!-- Sector Selection -->
+                        <div class="space-y-1.5">
+                            <label for="fct-sector" class="block text-xs font-semibold text-slate-500">Nhóm ngành nghề hoạt động & Tỷ lệ thuế quy định</label>
+                            <select id="fct-sector" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-semibold rounded-xl p-3 text-slate-700 dark:text-slate-300 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none" onchange="handleFctSectorChange()">
                                 <option value="5-5">Dịch vụ, cho thuê thiết bị (VAT: 5%, TNDN: 5%)</option>
-                                <option value="3-2">Cung cấp hàng hoá kèm dịch vụ / Xây dựng lắp đặt kèm vật tư (VAT: 3%, TNDN: 2%)</option>
+                                <option value="3-2">Hàng hoá kèm dịch vụ / Lắp đặt kèm vật tư (VAT: 3%, TNDN: 2%)</option>
                                 <option value="5-2">Xây dựng, lắp đặt không bao thầu vật tư (VAT: 5%, TNDN: 2%)</option>
-                                <option value="2-1">Hoạt động thương mại, phân phối hàng hoá tại Việt Nam (VAT: 2%, TNDN: 1%)</option>
-                                <option value="0-10">Bản quyền, nhượng quyền, công nghệ (VAT: Miễn thuế, TNDN: 10%)</option>
-                                <option value="0-5">Lãi tiền vay, dịch vụ tài chính (VAT: Miễn thuế, TNDN: 5%)</option>
-                                <option value="custom">Tùy chọn khác (Tự cấu hình tỷ lệ %)</option>
+                                <option value="2-1">Hoạt động thương mại, phân phối hàng hóa (VAT: 2%, TNDN: 1%)</option>
+                                <option value="0-10">Bản quyền, chuyển giao công nghệ (VAT: Miễn thuế, TNDN: 10%)</option>
+                                <option value="0-5">Lãi tiền vay ngân hàng, tài chính (VAT: Miễn thuế, TNDN: 5%)</option>
+                                <option value="custom">Tùy biến nâng cao (Tự cấu hình tỷ lệ %)</option>
                             </select>
                         </div>
 
-                        <!-- Specific Rates Row (Inputs) -->
+                        <!-- Specific Rates Rows -->
                         <div class="grid grid-cols-2 gap-4">
-                            <div class="space-y-1">
+                            <div class="space-y-1.5">
                                 <label for="fct-vat-rate" class="block text-xs font-semibold text-slate-500">Tỷ lệ thuế GTGT (%)</label>
-                                <input type="number" id="fct-vat-rate" value="5" disabled class="w-full text-sm font-bold font-mono text-slate-700 px-3 py-2 bg-slate-100 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-200" oninput="calculateFct()">
+                                <input type="number" id="fct-vat-rate" value="5" disabled class="w-full text-sm font-bold font-mono text-slate-700 dark:text-slate-300 px-3.5 py-2.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20" oninput="calculateFct()">
                             </div>
-                            <div class="space-y-1">
+                            <div class="space-y-1.5">
                                 <label for="fct-cit-rate" class="block text-xs font-semibold text-slate-500">Tỷ lệ thuế TNDN (%)</label>
-                                <input type="number" id="fct-cit-rate" value="5" disabled class="w-full text-sm font-bold font-mono text-slate-700 px-3 py-2 bg-slate-100 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-200" oninput="calculateFct()">
+                                <input type="number" id="fct-cit-rate" value="5" disabled class="w-full text-sm font-bold font-mono text-slate-700 dark:text-slate-300 px-3.5 py-2.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20" oninput="calculateFct()">
                             </div>
                         </div>
 
                     </div>
 
-                    <!-- Calculator Outputs & Explanations -->
-                    <div class="lg:col-span-7 bg-slate-50 border border-slate-200 rounded-2xl p-6 flex flex-col justify-between">
+                    <!-- Calculator Outputs -->
+                    <div class="lg:col-span-7 bg-slate-50/70 dark:bg-slate-950/40 border border-slate-200/60 dark:border-slate-800/80 rounded-2xl p-6 flex flex-col justify-between transition-all duration-300">
                         <div class="space-y-4">
-                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-200 pb-2">Kết quả phân rã cơ cấu thuế nhà thầu</h4>
+                            <h4 class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider border-b border-slate-200 dark:border-slate-800 pb-2">Hạch Toán Chi Tiết Gói Thầu</h4>
                             
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <!-- CIT Grid Card -->
-                                <div class="bg-white rounded-xl p-4 border border-slate-200 space-y-2">
-                                    <div class="text-[11px] font-bold text-indigo-600 tracking-wider uppercase flex items-center justify-between">
+                                <!-- CIT Component -->
+                                <div class="bg-white dark:bg-slate-900 rounded-xl p-4 border border-slate-200 dark:border-slate-850 space-y-2">
+                                    <div class="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 tracking-wider uppercase flex items-center justify-between">
                                         <span>Thuế TNDN (CIT)</span>
-                                        <span class="text-slate-400 font-mono" id="fct-cit-rate-badge">5%</span>
+                                        <span class="text-slate-400 dark:text-slate-500 font-mono font-bold" id="fct-cit-rate-badge">5%</span>
                                     </div>
                                     <div class="space-y-1">
-                                        <span class="text-[10px] text-slate-400 block">Doanh thu tính thuế TNDN:</span>
-                                        <span class="font-mono font-bold text-slate-800 text-sm" id="fct-res-cit-revenue">0 ₫</span>
+                                        <span class="text-[9px] text-slate-400 block">Doanh thu tính thuế CIT:</span>
+                                        <span class="font-mono font-bold text-slate-800 dark:text-slate-300 text-sm" id="fct-res-cit-revenue">0 ₫</span>
                                     </div>
-                                    <div class="space-y-1 border-t border-slate-100 pt-1.5">
-                                        <span class="text-[10px] text-slate-400 block">Số thuế TNDN khấu trừ:</span>
-                                        <span class="font-mono font-extrabold text-indigo-700 text-base" id="fct-res-cit-tax">0 ₫</span>
+                                    <div class="space-y-1 border-t border-slate-100 dark:border-slate-800 pt-1.5">
+                                        <span class="text-[9px] text-slate-400 block">Tiền thuế TNDN trích nộp:</span>
+                                        <span class="font-mono font-extrabold text-indigo-700 dark:text-indigo-400 text-base" id="fct-res-cit-tax">0 ₫</span>
                                     </div>
                                 </div>
 
-                                <!-- VAT Grid Card -->
-                                <div class="bg-white rounded-xl p-4 border border-slate-200 space-y-2">
-                                    <div class="text-[11px] font-bold text-emerald-600 tracking-wider uppercase flex items-center justify-between">
+                                <!-- VAT Component -->
+                                <div class="bg-white dark:bg-slate-900 rounded-xl p-4 border border-slate-200 dark:border-slate-850 space-y-2">
+                                    <div class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 tracking-wider uppercase flex items-center justify-between">
                                         <span>Thuế GTGT (VAT)</span>
-                                        <span class="text-slate-400 font-mono" id="fct-vat-rate-badge">5%</span>
+                                        <span class="text-slate-400 dark:text-slate-500 font-mono font-bold" id="fct-vat-rate-badge">5%</span>
                                     </div>
                                     <div class="space-y-1">
-                                        <span class="text-[10px] text-slate-400 block">Doanh thu tính thuế GTGT:</span>
-                                        <span class="font-mono font-bold text-slate-800 text-sm" id="fct-res-vat-revenue">0 ₫</span>
+                                        <span class="text-[9px] text-slate-400 block">Doanh thu tính thuế VAT:</span>
+                                        <span class="font-mono font-bold text-slate-800 dark:text-slate-300 text-sm" id="fct-res-vat-revenue">0 ₫</span>
                                     </div>
-                                    <div class="space-y-1 border-t border-slate-100 pt-1.5">
-                                        <span class="text-[10px] text-slate-400 block">Số thuế GTGT khấu trừ:</span>
-                                        <span class="font-mono font-extrabold text-emerald-700 text-base" id="fct-res-vat-tax">0 ₫</span>
+                                    <div class="space-y-1 border-t border-slate-100 dark:border-slate-800 pt-1.5">
+                                        <span class="text-[9px] text-slate-400 block">Tiền thuế GTGT trích nộp:</span>
+                                        <span class="font-mono font-extrabold text-emerald-700 dark:text-emerald-400 text-base" id="fct-res-vat-tax">0 ₫</span>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Summary rows -->
-                            <div class="space-y-2 bg-white rounded-xl p-4 border border-slate-200">
-                                <div class="flex justify-between items-center text-xs py-1 border-b border-dashed border-slate-100">
-                                    <span class="text-slate-500">Nhà thầu nước ngoài thực nhận (Net):</span>
-                                    <span class="font-mono font-bold text-slate-900" id="fct-res-contractor-get">0 ₫</span>
+                            <!-- Financial Breakdown Summary -->
+                            <div class="space-y-2.5 bg-white dark:bg-slate-900 rounded-xl p-4 border border-slate-200 dark:border-slate-850">
+                                <div class="flex justify-between items-center text-xs py-1 border-b border-dashed border-slate-100 dark:border-slate-800">
+                                    <span class="text-slate-500 dark:text-slate-400 font-semibold">Nhà thầu thực nhận về ví (Net):</span>
+                                    <span class="font-mono font-bold text-slate-900 dark:text-slate-100" id="fct-res-contractor-get">0 ₫</span>
                                 </div>
-                                <div class="flex justify-between items-center text-xs py-1 border-b border-dashed border-slate-100">
-                                    <span class="text-slate-500">Tổng thuế FCT phải nộp (VAT + CIT):</span>
-                                    <span class="font-mono font-bold text-rose-600" id="fct-res-total-tax">0 ₫</span>
+                                <div class="flex justify-between items-center text-xs py-1 border-b border-dashed border-slate-100 dark:border-slate-800">
+                                    <span class="text-slate-500 dark:text-slate-400 font-semibold">Tổng thuế FCT phải nộp (GTGT + TNDN):</span>
+                                    <span class="font-mono font-bold text-rose-500 dark:text-rose-400" id="fct-res-total-tax">0 ₫</span>
                                 </div>
                                 <div class="flex justify-between items-center text-sm py-1.5">
-                                    <span class="font-bold text-slate-700" id="label-fct-cdt-cost">Tổng chi phí dự án của CĐT (Gross-up):</span>
-                                    <span class="font-mono font-extrabold text-indigo-700 text-base" id="fct-res-cdt-cost">0 ₫</span>
+                                    <span class="font-bold text-slate-700 dark:text-slate-300" id="label-fct-cdt-cost">Chi phí chủ đầu tư ghi nhận (Gross-up):</span>
+                                    <span class="font-mono font-extrabold text-indigo-600 dark:text-indigo-400 text-base" id="fct-res-cdt-cost">0 ₫</span>
                                 </div>
                             </div>
 
-                            <!-- Reading Total Tax in Words -->
-                            <div class="bg-indigo-50/40 p-4 rounded-xl border border-indigo-100/50 space-y-1.5">
-                                <div class="text-[10px] font-bold text-indigo-700 uppercase tracking-wider flex items-center gap-1.5">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                                    Đọc tổng số tiền thuế FCT bằng chữ (Dành cho Giấy nộp tiền NSNN)
+                            <!-- Reading Tax Words -->
+                            <div class="bg-indigo-50/30 dark:bg-indigo-950/10 p-4 rounded-xl border border-indigo-100/30 dark:border-indigo-950/30 space-y-2">
+                                <div class="text-[9px] font-bold text-indigo-700 dark:text-indigo-400 uppercase tracking-wider flex items-center gap-2">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                    Đọc tiền thuế FCT bằng chữ (Viết Giấy nộp tiền vào NSNN)
                                 </div>
-                                <div class="space-y-1">
-                                    <p id="fct-res-words-vi" class="text-xs font-semibold text-slate-700 italic">Không đồng chẵn.</p>
-                                    <p id="fct-res-words-en" class="text-[11px] font-medium text-slate-500 italic">Zero dongs only.</p>
+                                <div class="space-y-1 font-semibold italic">
+                                    <p id="fct-res-words-vi" class="text-xs text-slate-700 dark:text-slate-300">Không đồng chẵn.</p>
+                                    <p id="fct-res-words-en" class="text-[11px] text-slate-500 dark:text-slate-400">Zero dongs only.</p>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Action buttons -->
-                        <div class="flex gap-2 mt-6">
-                            <button onclick="copyFctResult()" class="flex-grow flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs py-2.5 px-4 rounded-xl shadow-lg shadow-indigo-500/10 transition-all">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
-                                Sao chép chi tiết thuế nhà thầu
+                        <!-- Actions -->
+                        <div class="mt-6">
+                            <button onclick="copyFctResult()" class="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs py-3 px-4 rounded-xl shadow-lg shadow-indigo-500/10 dark:shadow-none transition-all duration-300">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                                Sao chép báo cáo chi tiết thuế FCT
                             </button>
                         </div>
                     </div>
@@ -563,95 +622,95 @@
 
         <!-- ================= TAB 4: QUY ĐỔI NGOẠI TỆ ================= -->
         <div id="tab-rates" class="tab-content hidden space-y-6">
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-                <h3 class="text-lg font-bold text-slate-900 border-b border-slate-100 pb-4 mb-6 flex items-center gap-2">
-                    <span class="p-1.5 bg-indigo-50 rounded-lg text-indigo-600">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-premium border border-slate-200/60 dark:border-slate-800/80 p-6 transition-all duration-300">
+                <h3 class="text-base font-bold text-slate-900 dark:text-slate-100 border-b border-slate-100 dark:border-slate-800 pb-4 mb-6 flex items-center gap-2.5">
+                    <span class="p-1.5 bg-indigo-50 dark:bg-indigo-950/50 rounded-lg text-indigo-600 dark:text-indigo-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     </span>
-                    Bảng Quy Đổi Ngoại Tệ & Dòng Tiền Dự Án nhanh
+                    Bảng Quy Đổi Dự Án Ngoại Tệ Hợp Đồng
                 </h3>
 
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
-                    <!-- Conversion Input Form -->
+                    <!-- Form input exchange -->
                     <div class="md:col-span-6 space-y-5">
-                        <p class="text-sm text-slate-500 leading-relaxed">
-                            Công cụ hỗ trợ nhanh việc quy đổi ngân sách dự án (ví dụ: Tổng giá trị thiết bị USD sang VND hoặc ngược lại) dựa vào tỷ giá trực tiếp bạn muốn thiết lập.
+                        <p class="text-xs font-semibold text-slate-500 leading-relaxed dark:text-slate-400">
+                            Công cụ hỗ trợ nhanh việc quy đổi ngân sách thiết bị hoặc dịch vụ mua sắm bằng ngoại tệ (USD sang VND hoặc ngược lại) dựa trên tỷ giá quy định riêng của từng dự án.
                         </p>
 
                         <div class="space-y-4">
-                            <!-- Conversion Type -->
+                            <!-- Conversion Direction -->
                             <div>
-                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Hướng quy đổi</label>
-                                <div class="grid grid-cols-2 gap-2">
-                                    <label class="border border-slate-200 rounded-xl p-3 flex items-center gap-2 cursor-pointer hover:border-indigo-300 transition-all [&:has(input:checked)]:border-indigo-600 [&:has(input:checked)]:bg-indigo-50/30">
+                                <label class="block text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">Hướng quy đổi mong muốn</label>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <label class="border border-slate-200 dark:border-slate-800 rounded-xl p-3 flex items-center gap-2.5 cursor-pointer hover:border-indigo-300 dark:hover:border-indigo-900 transition-all [&:has(input:checked)]:border-indigo-600 dark:[&:has(input:checked)]:border-indigo-500 [&:has(input:checked)]:bg-indigo-50/20 dark:[&:has(input:checked)]:bg-indigo-950/10">
                                         <input type="radio" name="currency-direction" value="usd-to-vnd" checked class="w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-500" onchange="updateCurrencyExchange()">
                                         <div>
-                                            <span class="text-xs font-bold text-slate-700 block">USD → VND</span>
-                                            <span class="text-[9px] text-slate-400">Đổi Ngoại tệ sang Việt Nam Đồng</span>
+                                            <span class="text-xs font-bold text-slate-700 dark:text-slate-300 block">USD → VND</span>
+                                            <span class="text-[9px] text-slate-400 dark:text-slate-500 font-medium">Bán ra ngoại tệ thu nội tệ</span>
                                         </div>
                                     </label>
-                                    <label class="border border-slate-200 rounded-xl p-3 flex items-center gap-2 cursor-pointer hover:border-indigo-300 transition-all [&:has(input:checked)]:border-indigo-600 [&:has(input:checked)]:bg-indigo-50/30">
+                                    <label class="border border-slate-200 dark:border-slate-800 rounded-xl p-3 flex items-center gap-2.5 cursor-pointer hover:border-indigo-300 dark:hover:border-indigo-900 transition-all [&:has(input:checked)]:border-indigo-600 dark:[&:has(input:checked)]:border-indigo-500 [&:has(input:checked)]:bg-indigo-50/20 dark:[&:has(input:checked)]:bg-indigo-950/10">
                                         <input type="radio" name="currency-direction" value="vnd-to-usd" class="w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-500" onchange="updateCurrencyExchange()">
                                         <div>
-                                            <span class="text-xs font-bold text-slate-700 block">VND → USD</span>
-                                            <span class="text-[9px] text-slate-400">Đổi Nội tệ sang Đô la Mỹ</span>
+                                            <span class="text-xs font-bold text-slate-700 dark:text-slate-300 block">VND → USD</span>
+                                            <span class="text-[9px] text-slate-400 dark:text-slate-500 font-medium">Quy đổi nội tệ sang ngoại tệ</span>
                                         </div>
                                     </label>
                                 </div>
                             </div>
 
-                            <!-- Source Amount -->
-                            <div class="space-y-1">
+                            <!-- Source Value -->
+                            <div class="space-y-1.5">
                                 <label for="exchange-source-val" class="block text-xs font-semibold text-slate-500" id="label-exchange-source">Số tiền nguồn (USD)</label>
                                 <div class="relative">
-                                    <input type="text" id="exchange-source-val" placeholder="Nhập số tiền..." class="w-full text-base font-bold font-mono text-slate-900 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 transition-all" oninput="updateCurrencyExchange()">
-                                    <span class="absolute right-3 top-3 text-xs text-slate-400 font-bold select-none" id="badge-exchange-source">USD</span>
+                                    <input type="text" id="exchange-source-val" placeholder="Nhập số tiền..." class="w-full text-base font-bold font-mono text-slate-900 dark:text-white px-4 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus:bg-white dark:focus:bg-slate-950 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all" oninput="updateCurrencyExchange()">
+                                    <span class="absolute right-3.5 top-3.5 text-xs text-slate-400 font-bold select-none" id="badge-exchange-source">USD</span>
                                 </div>
                             </div>
 
-                            <!-- Target Rate -->
-                            <div class="space-y-1">
-                                <label for="exchange-rate-val" class="block text-xs font-semibold text-slate-500">Tỷ giá quy định trong hợp đồng dự án</label>
+                            <!-- Conversion Rate -->
+                            <div class="space-y-1.5">
+                                <label for="exchange-rate-val" class="block text-xs font-semibold text-slate-500">Tỷ giá định biên quy định dự án</label>
                                 <div class="relative">
-                                    <input type="text" id="exchange-rate-val" value="25.450" class="w-full text-base font-bold font-mono text-slate-900 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 transition-all" oninput="updateCurrencyExchange()">
-                                    <span class="absolute right-3 top-3 text-xs text-slate-400 font-bold select-none">VND/USD</span>
+                                    <input type="text" id="exchange-rate-val" value="25.450" class="w-full text-base font-bold font-mono text-slate-900 dark:text-white px-4 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus:bg-white dark:focus:bg-slate-950 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all" oninput="updateCurrencyExchange()">
+                                    <span class="absolute right-3.5 top-3.5 text-xs text-slate-400 font-bold select-none">VND/USD</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Conversion Results -->
-                    <div class="md:col-span-6 bg-slate-50 border border-slate-200 rounded-2xl p-6 flex flex-col justify-between">
+                    <!-- Conversion Target Panel -->
+                    <div class="md:col-span-6 bg-slate-50/70 dark:bg-slate-950/40 border border-slate-200/60 dark:border-slate-800/80 rounded-2xl p-6 flex flex-col justify-between transition-all duration-300">
                         <div class="space-y-4">
-                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-200 pb-2">Giá Trị Sau Khi Quy Đổi</h4>
+                            <h4 class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider border-b border-slate-200 dark:border-slate-800 pb-2">Giá Trị Đích Quy Đổi</h4>
                             
-                            <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-4">
+                            <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-850 space-y-3.5">
                                 <div class="flex flex-col">
-                                    <span class="text-xs text-slate-400 font-medium">Số tiền đích nhận được:</span>
-                                    <span class="text-2xl font-mono font-black text-indigo-700 tracking-tight" id="exchange-res-num">0 ₫</span>
+                                    <span class="text-[10px] text-slate-400 dark:text-slate-500 font-semibold uppercase tracking-wider">Số tiền quy đổi được:</span>
+                                    <span class="text-2xl font-mono font-black text-indigo-600 dark:text-indigo-400 tracking-tight" id="exchange-res-num">0 ₫</span>
                                 </div>
 
-                                <div class="border-t border-dashed border-slate-200 pt-3">
-                                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Cách đọc bằng chữ Việt:</span>
-                                    <p id="exchange-res-words-vi" class="text-xs font-semibold text-slate-700 italic">Không đồng chẵn.</p>
+                                <div class="border-t border-dashed border-slate-100 dark:border-slate-800 pt-3">
+                                    <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block mb-1">Cách đọc Tiếng Việt:</span>
+                                    <p id="exchange-res-words-vi" class="text-xs font-semibold text-slate-700 dark:text-slate-300 italic">Không đồng chẵn.</p>
                                 </div>
 
-                                <div class="border-t border-dashed border-slate-200 pt-3">
-                                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Cách đọc bằng chữ Anh (English):</span>
-                                    <p id="exchange-res-words-en" class="text-xs font-semibold text-slate-700 italic">Zero.</p>
+                                <div class="border-t border-dashed border-slate-100 dark:border-slate-800 pt-3">
+                                    <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block mb-1">Cách đọc English:</span>
+                                    <p id="exchange-res-words-en" class="text-xs font-semibold text-slate-700 dark:text-slate-300 italic">Zero.</p>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Buttons to act -->
+                        <!-- Copy Target Buttons -->
                         <div class="grid grid-cols-2 gap-3 mt-6">
-                            <button onclick="copyExchangeResult('vi')" class="bg-white border border-slate-200 hover:border-slate-300 text-slate-700 font-semibold text-xs py-2.5 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
-                                Copy Chữ Việt
+                            <button onclick="copyExchangeResult('vi', this)" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs py-2.5 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-sm">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                                <span>Copy Chữ Việt</span>
                             </button>
-                            <button onclick="copyExchangeResult('en')" class="bg-white border border-slate-200 hover:border-slate-300 text-slate-700 font-semibold text-xs py-2.5 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
-                                Copy Chữ Anh
+                            <button onclick="copyExchangeResult('en', this)" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs py-2.5 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-sm">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                                <span>Copy Chữ Anh</span>
                             </button>
                         </div>
                     </div>
@@ -662,91 +721,128 @@
     </main>
 
     <!-- Footer Area -->
-    <footer class="bg-slate-900 border-t border-slate-800 text-slate-400 py-6 mt-auto text-xs text-center">
+    <footer class="bg-white dark:bg-[#060911] border-t border-slate-100 dark:border-slate-900 text-slate-400 dark:text-slate-500 py-6 mt-auto text-[11px] text-center theme-transition relative z-10">
         <div class="max-w-7xl mx-auto px-4 space-y-2">
-            <p class="font-medium">© 2026 SmartAcc. Thiết kế dành riêng cho Nghiệp vụ Kế toán & Quản lý Dự án.</p>
-            <p class="text-slate-500">Mọi phép toán chuyển khoản, quy đổi tỷ giá, quy đổi chữ viết tiền tệ đều được lập trình chính xác theo thông tư tài chính hiện hành.</p>
+            <p class="font-bold text-slate-600 dark:text-slate-400">© 2026 SmartAcc. Kiến trúc dành cho Kế toán quản trị & Tài chính dự án.</p>
+            <p class="max-w-2xl mx-auto leading-relaxed">Cơ sở lý thuyết quy đổi tỷ giá, hạch toán cơ cấu thuế nhà thầu và thuế suất giá trị gia tăng được lập trình nghiêm ngặt theo chuẩn mực kế toán Việt Nam (VAS) và các nghị định hướng dẫn bổ sung của Bộ Tài Chính.</p>
         </div>
     </footer>
 
-    <!-- Custom Toast Notification System -->
-    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300 ease-out bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-2 border border-slate-800">
-        <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-        <span class="text-xs font-semibold" id="toast-message">Đã sao chép nội dung thành công!</span>
+    <!-- Smooth Toast System -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300 ease-out bg-slate-900/95 dark:bg-slate-800/95 backdrop-blur text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-2 border border-slate-800 dark:border-slate-700">
+        <div class="p-1 bg-emerald-500/10 rounded-lg text-emerald-400">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+        </div>
+        <span class="text-xs font-bold" id="toast-message">Đã sao chép nội dung thành công!</span>
     </div>
 
-    <!-- JavaScript Functions Section -->
+    <!-- Javascript System Code -->
     <script>
+        // Check theme preferences
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            document.getElementById('theme-sun').classList.remove('hidden');
+            document.getElementById('theme-moon').classList.add('hidden');
+        } else {
+            document.documentElement.classList.remove('dark');
+            document.getElementById('theme-sun').classList.add('hidden');
+            document.getElementById('theme-moon').classList.remove('hidden');
+        }
+
+        function toggleTheme() {
+            const doc = document.documentElement;
+            const isDark = doc.classList.contains('dark');
+            if (isDark) {
+                doc.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+                document.getElementById('theme-sun').classList.add('hidden');
+                document.getElementById('theme-moon').classList.remove('hidden');
+            } else {
+                doc.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                document.getElementById('theme-sun').classList.remove('hidden');
+                document.getElementById('theme-moon').classList.add('hidden');
+            }
+        }
+
         // Tab switching logic
         function switchTab(tabId) {
-            // Hide all tab contents
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.add('hidden');
             });
-            // Show selected tab
             document.getElementById(tabId).classList.remove('hidden');
 
-            // Deactivate all navigation tabs
             document.querySelectorAll('.nav-tab').forEach(btn => {
-                btn.classList.remove('bg-indigo-50', 'text-indigo-700', 'active');
-                btn.classList.add('text-slate-600', 'hover:text-slate-900', 'hover:bg-slate-50');
+                btn.className = "nav-tab flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all duration-300 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 shrink-0";
             });
 
-            // Activate current tab button
             const activeBtn = document.getElementById(`btn-${tabId}`);
             if (activeBtn) {
-                activeBtn.classList.remove('text-slate-600', 'hover:text-slate-900', 'hover:bg-slate-50');
-                activeBtn.classList.add('bg-indigo-50', 'text-indigo-700', 'active');
+                activeBtn.className = "nav-tab flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all duration-300 shadow-sm bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shrink-0";
             }
         }
 
-        // Custom non-blocking Toast feedback
+        // Custom Toast system
         function showToast(message) {
             const toast = document.getElementById('toast');
             document.getElementById('toast-message').textContent = message;
-            toast.classList.add('toast-active');
-            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
             
             setTimeout(() => {
-                toast.classList.remove('toast-active');
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 2500);
+                toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+            }, 3000);
         }
 
-        // Copy functionality utilizing requested mechanism with fallback
-        function copyToClipboard(elementId) {
+        // Copy mechanism with animated feedback directly on the active button
+        function copyToClipboard(elementId, buttonElement) {
             const textToCopy = document.getElementById(elementId).innerText;
-            if (textToCopy === "Vui lòng nhập số tiền để đọc." || textToCopy === "Please enter an amount to read.") {
-                showToast("Chưa có nội dung để copy!");
+            if (textToCopy.startsWith("Vui lòng nhập") || textToCopy.startsWith("Please enter") || textToCopy === "Không đồng chẵn." || textToCopy === "Zero.") {
+                showToast("Không có thông tin nào để sao chép!");
                 return;
             }
             
-            // Create a temporary hidden input to perform legacy execution command as requested by framework guardrails
             const tempInput = document.createElement("textarea");
             tempInput.value = textToCopy;
             document.body.appendChild(tempInput);
             tempInput.select();
             try {
                 document.execCommand('copy');
-                showToast("Đã sao chép vào bộ nhớ tạm!");
+                showToast("Đã sao chép nội dung vào bộ nhớ tạm!");
+                
+                // Button UI interaction animation
+                if (buttonElement) {
+                    const iconEl = buttonElement.querySelector('svg');
+                    const textEl = buttonElement.querySelector('.copy-text');
+                    const originalHTML = iconEl ? iconEl.outerHTML : '';
+                    const originalText = textEl ? textEl.textContent : 'Copy';
+                    
+                    if (textEl) textEl.textContent = 'Đã Copy!';
+                    if (iconEl) {
+                        iconEl.outerHTML = `<svg class="w-3.5 h-3.5 text-emerald-500 animate-bounce" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path></svg>`;
+                    }
+                    buttonElement.classList.add('border-emerald-500', 'text-emerald-500');
+                    
+                    setTimeout(() => {
+                        const newIcon = buttonElement.querySelector('svg');
+                        if (newIcon) newIcon.outerHTML = originalHTML;
+                        if (textEl) textEl.textContent = originalText;
+                        buttonElement.classList.remove('border-emerald-500', 'text-emerald-500');
+                    }, 1500);
+                }
             } catch (err) {
-                showToast("Có lỗi xảy ra khi copy!");
+                showToast("Không thể sao chép, vui lòng thử lại!");
             }
             document.body.removeChild(tempInput);
         }
 
-        // ================= ALGORITHMS: NUMBERS TO WORDS =================
+        // ================= ALGORITHMS: NUMBERS TO WORDS SYSTEM =================
 
-        // VIETNAMESE conversion code
-        const unitsVN = ["", "nghìn", "triệu", "tỷ", "nghìn tỷ", "triệu tỷ", "tỷ tỷ"];
         const digitsVN = ["không", "một", "hai", "ba", "bốn", "năm", "sáu", "bảy", "tám", "chín"];
 
         function convertToVietnameseWords(numString, dialect = "north", allowDecimal = true, suffix = "đồng chẵn") {
-            // Normalize
             numString = numString.trim().replace(/\s/g, '');
             if (!numString || numString === "0") return "Không " + suffix;
 
-            // Handle decimal part
             let mainPart = numString;
             let decimalPart = "";
             if (numString.includes(".")) {
@@ -759,24 +855,19 @@
                 decimalPart = parts[1] || "";
             }
 
-            // Dialect adaptations
             const nghinWord = (dialect === "north") ? "nghìn" : "ngàn";
             const leWord = (dialect === "north") ? "linh" : "lẻ";
 
             let result = "";
-
-            // Group core number in chunks of 3 digits
             let cleanMain = mainPart.replace(/[^\d]/g, '');
             if (!cleanMain) cleanMain = "0";
             
-            // Process integer part
             if (cleanMain === "0") {
                 result = "Không";
             } else {
                 result = readLargeNumberVN(cleanMain, nghinWord, leWord);
             }
 
-            // Process decimal part
             if (allowDecimal && decimalPart.replace(/[^\d]/g, '') !== "") {
                 const cleanDec = decimalPart.replace(/[^\d]/g, '');
                 if (parseInt(cleanDec) > 0) {
@@ -787,7 +878,6 @@
                 }
             }
 
-            // Append Vietnamese suffix
             if (suffix) {
                 result += " " + suffix;
             }
@@ -796,7 +886,6 @@
         }
 
         function readLargeNumberVN(numStr, nghinWord, leWord) {
-            // Remove leading zeros
             numStr = numStr.replace(/^0+/, '');
             if (numStr === "") return "";
 
@@ -837,12 +926,10 @@
 
             if (tram === 0 && chuc === 0 && donVi === 0) return "";
 
-            // Read Hundreds
             if (!isFirst || tram > 0) {
                 out += digitsVN[tram] + " trăm ";
             }
 
-            // Read Tens
             if (chuc > 1) {
                 out += digitsVN[chuc] + " mươi ";
             } else if (chuc === 1) {
@@ -853,13 +940,12 @@
                 }
             }
 
-            // Read Units
             if (donVi === 1 && chuc > 1) {
                 out += "mốt";
             } else if (donVi === 5 && chuc > 0) {
                 out += "lăm";
             } else if (donVi === 4 && chuc > 1) {
-                out += "tư"; // accounting preference
+                out += "tư"; // Professional accounting choice
             } else if (donVi > 0 || (donVi === 0 && chuc === 0 && tram === 0)) {
                 if (donVi > 0) {
                     out += digitsVN[donVi];
@@ -869,8 +955,7 @@
             return out.trim();
         }
 
-
-        // ENGLISH conversion code
+        // ENGLISH Translation Logic
         const onesEN = ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"];
         const tensEN = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
         const scalesEN = ["", "thousand", "million", "billion", "trillion", "quadrillion"];
@@ -895,19 +980,17 @@
             if (!cleanMain) cleanMain = "0";
 
             let result = "";
-
             if (cleanMain === "0") {
                 result = "Zero";
             } else {
                 result = readLargeNumberEN(cleanMain);
             }
 
-            // Parse decimals (like cents)
             if (allowDecimal && decimalPart.replace(/[^\d]/g, '') !== "") {
-                const cleanDec = decimalPart.replace(/[^\d]/g, '').slice(0, 2); // limit to 2 decimal places for cents
+                const cleanDec = decimalPart.replace(/[^\d]/g, '').slice(0, 2);
                 if (parseInt(cleanDec) > 0) {
                     let decVal = parseInt(cleanDec);
-                    if (cleanDec.length === 1) decVal *= 10; // "0.5" means "50"
+                    if (cleanDec.length === 1) decVal *= 10;
                     
                     let decWords = readGroupOfThreeEN(decVal);
                     result += " and " + decWords;
@@ -970,13 +1053,10 @@
             return out.trim();
         }
 
-        // Formatting utilities
         function cleanAndFormatText(str) {
-            // Clean up extra spaces
             str = str.replace(/\s+/g, ' ').trim();
             if (!str) return "";
 
-            // Get selected case
             const selectedCase = document.querySelector('input[name="text-case"]:checked')?.value || 'sentence';
 
             if (selectedCase === 'upper') {
@@ -984,7 +1064,6 @@
             } else if (selectedCase === 'lower') {
                 return str.toLowerCase();
             } else {
-                // Sentence Case (Capitalize first letter only)
                 return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
             }
         }
@@ -993,17 +1072,13 @@
 
         let historyList = [];
 
-        // Formatting currency visual with commas as user types
         function formatNumberWithCommas(value) {
-            // Remove everything except numbers and decimal point
             let cleaned = value.replace(/[^\d.]/g, '');
-            
-            // Allow only one decimal point
             let parts = cleaned.split('.');
             parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
             
             if (parts.length > 1) {
-                return parts[0] + '.' + parts[1].slice(0, 4); // Limit decimal places to 4 for project math
+                return parts[0] + '.' + parts[1].slice(0, 4);
             }
             return parts[0];
         }
@@ -1014,11 +1089,9 @@
             inputElement.value = formatted;
 
             let numericString = formatted.replace(/,/g, '');
-            
-            // Update live helper preview below input
             const preview = document.getElementById('live-formatted-preview');
             if (numericString && !isNaN(numericString)) {
-                preview.textContent = "= " + parseFloat(numericString).toLocaleString('vi-VN', {maximumFractionDigits: 4}) + " VND / USD";
+                preview.textContent = "≈ " + parseFloat(numericString).toLocaleString('vi-VN', {maximumFractionDigits: 4}) + " VND / USD";
             } else {
                 preview.textContent = "";
             }
@@ -1043,7 +1116,7 @@
                 viOutput.innerText = "Vui lòng nhập số tiền để đọc.";
                 enOutput.innerText = "Please enter an amount to read.";
                 statusBadge.textContent = "Đang đợi số liệu...";
-                statusBadge.className = "text-xs bg-slate-100 text-slate-600 font-semibold px-2 py-1 rounded-md";
+                statusBadge.className = "text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-500 font-bold px-2.5 py-1 rounded-md";
                 return;
             }
 
@@ -1053,26 +1126,23 @@
             viOutput.innerText = viText;
             enOutput.innerText = enText;
 
-            statusBadge.textContent = "Đã dịch thành công";
-            statusBadge.className = "text-xs bg-emerald-100 text-emerald-800 font-semibold px-2 py-1 rounded-md";
+            statusBadge.textContent = "Đã quy đổi";
+            statusBadge.className = "text-[10px] bg-emerald-100 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 font-bold px-2.5 py-1 rounded-md";
 
-            // Push to session history debounce / threshold (add only completed conversions on inactivity)
             addToHistoryDebounced(numericString, viText);
         }
 
-        // Debounce history insertions so it doesn't log every keystroke
         let historyTimeout;
         function addToHistoryDebounced(num, txt) {
             clearTimeout(historyTimeout);
             historyTimeout = setTimeout(() => {
-                // Ensure we don't log duplicates consecutively
-                if (historyList.length > 0 && historyList[0].num === num) return;
+                if (historyList.length > 0 && historyList[0].num === parseFloat(num).toLocaleString('vi-VN')) return;
                 
                 const timeStr = new Date().toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit', second:'2-digit'});
                 const historyItem = { time: timeStr, num: parseFloat(num).toLocaleString('vi-VN'), text: txt };
                 
                 historyList.unshift(historyItem);
-                if (historyList.length > 10) historyList.pop(); // keep last 10 entries
+                if (historyList.length > 10) historyList.pop();
                 
                 renderHistory();
             }, 1500);
@@ -1089,17 +1159,16 @@
 
             if (emptyRow) emptyRow.style.display = 'none';
 
-            // Clear old non-empty rows
             const oldRows = rowsContainer.querySelectorAll('.history-item-row');
             oldRows.forEach(row => row.remove());
 
             historyList.forEach(item => {
                 const tr = document.createElement('tr');
-                tr.className = 'history-item-row border-b border-slate-100 hover:bg-slate-50 transition-colors duration-150';
+                tr.className = 'history-item-row border-b border-slate-100 dark:border-slate-800/60 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors duration-150';
                 tr.innerHTML = `
-                    <td class="py-3 text-slate-400 font-mono">${item.time}</td>
-                    <td class="py-3 font-mono text-indigo-600 font-bold">${item.num}</td>
-                    <td class="py-3 pr-2 text-slate-600">${item.text}</td>
+                    <td class="py-3 text-slate-400 dark:text-slate-500 font-mono font-bold">${item.time}</td>
+                    <td class="py-3 font-mono text-indigo-600 dark:text-indigo-400 font-extrabold text-sm">${item.num}</td>
+                    <td class="py-3 pr-2 text-slate-600 dark:text-slate-300 text-xs font-semibold">${item.text}</td>
                 `;
                 rowsContainer.appendChild(tr);
             });
@@ -1150,14 +1219,13 @@
         function setVatRate(rate) {
             currentVatRate = rate;
             
-            // Highlight buttons
             document.querySelectorAll('[id^="btn-vat-"]').forEach(btn => {
-                btn.className = "py-2 border border-slate-200 rounded-lg text-xs font-bold hover:bg-indigo-50 hover:border-indigo-200 transition-all";
+                btn.className = "py-2.5 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-800/80 text-slate-700 dark:text-slate-300 transition-all";
             });
             
             const activeBtn = document.getElementById(`btn-vat-${rate}`);
             if (activeBtn) {
-                activeBtn.className = "py-2 border border-indigo-200 bg-indigo-50 rounded-lg text-xs font-bold text-indigo-600 shadow-sm transition-all";
+                activeBtn.className = "py-2.5 border border-indigo-200 dark:border-indigo-900 bg-indigo-50 dark:bg-indigo-950/50 rounded-xl text-xs font-bold text-indigo-600 dark:text-indigo-400 shadow-sm transition-all";
             }
 
             document.getElementById('vat-custom-rate').value = rate;
@@ -1171,9 +1239,8 @@
             if (isNaN(num) || num < 0) num = 0;
             currentVatRate = num;
 
-            // Remove highlight of standard option buttons
             document.querySelectorAll('[id^="btn-vat-"]').forEach(btn => {
-                btn.className = "py-2 border border-slate-200 rounded-lg text-xs font-bold hover:bg-indigo-50 hover:border-indigo-200 transition-all";
+                btn.className = "py-2.5 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-800/80 text-slate-700 dark:text-slate-300 transition-all";
             });
 
             const direction = document.querySelector('input[name="vat-direction"]:checked').value;
@@ -1189,7 +1256,6 @@
             let vatVal = 0;
 
             if (direction === 'forward') {
-                // Net to Gross
                 const inputVal = document.getElementById('vat-net').value.replace(/,/g, '');
                 document.getElementById('vat-net').value = formatNumberWithCommas(document.getElementById('vat-net').value);
                 
@@ -1202,7 +1268,6 @@
                     document.getElementById('vat-gross').value = "";
                 }
             } else {
-                // Gross to Net
                 const inputVal = document.getElementById('vat-gross').value.replace(/,/g, '');
                 document.getElementById('vat-gross').value = formatNumberWithCommas(document.getElementById('vat-gross').value);
                 
@@ -1216,14 +1281,12 @@
                 }
             }
 
-            // Render Output Table
-            document.getElementById('res-net').textContent = netVal.toLocaleString('vi-VN') + " ₫";
-            document.getElementById('res-vat-amount').textContent = vatVal.toLocaleString('vi-VN') + " ₫";
-            document.getElementById('res-gross').textContent = grossVal.toLocaleString('vi-VN') + " ₫";
+            document.getElementById('res-net').textContent = Math.round(netVal).toLocaleString('vi-VN') + " ₫";
+            document.getElementById('res-vat-amount').textContent = Math.round(vatVal).toLocaleString('vi-VN') + " ₫";
+            document.getElementById('res-gross').textContent = Math.round(grossVal).toLocaleString('vi-VN') + " ₫";
             document.getElementById('res-rate-label').textContent = currentVatRate + "%";
 
-            // Render Words reading in Output
-            const wordsText = convertToVietnameseWords(grossVal.toFixed(0), "north", false, "đồng chẵn");
+            const wordsText = convertToVietnameseWords(Math.round(grossVal).toString(), "north", false, "đồng chẵn");
             document.getElementById('res-words').textContent = wordsText;
         }
 
@@ -1243,13 +1306,13 @@
             document.execCommand('copy');
             document.body.removeChild(tempInput);
 
-            showToast("Đã copy chi tiết cơ cấu thuế VAT!");
+            showToast("Đã sao chép báo cáo chi tiết VAT!");
         }
 
         function sendVatToReader() {
             const grossString = document.getElementById('res-gross').textContent.replace(/[^\d]/g, '');
             if (!grossString || grossString === "0") {
-                showToast("Vui lòng nhập số tiền hợp lệ để đọc chuyên sâu!");
+                showToast("Vui lòng nhập số tiền hợp lệ để phân tích!");
                 return;
             }
             switchTab('tab-convert');
@@ -1302,14 +1365,13 @@
             const labelCdtCost = document.getElementById('label-fct-cdt-cost');
 
             if (method === 'net') {
-                labelFctAmount.textContent = "Giá trị thanh toán thực nhận của nhà thầu (Net)";
-                labelCdtCost.textContent = "Tổng chi phí dự án của CĐT (Gross-up value):";
+                labelFctAmount.textContent = "Giá trị thanh toán nhà thầu thực nhận (Net)";
+                labelCdtCost.textContent = "Tổng chi phí dự án CĐT ghi nhận (Gross-up value):";
             } else {
                 labelFctAmount.textContent = "Tổng giá trị hợp đồng gồm thuế (Gross)";
-                labelCdtCost.textContent = "Tổng giá trị hợp đồng (Gross value):";
+                labelCdtCost.textContent = "Tổng giá trị hợp đồng thầu (Gross value):";
             }
 
-            // Update badges
             document.getElementById('fct-cit-rate-badge').textContent = citRate + "%";
             document.getElementById('fct-vat-rate-badge').textContent = vatRate + "%";
 
@@ -1331,35 +1393,24 @@
                 const denomVat = (1 - rVat) === 0 ? 1 : (1 - rVat);
 
                 if (method === 'net') {
-                    // Net to Gross Calculation (Gross-up Method)
                     contractorNet = inputNum;
-                    
-                    // CIT Gross-up
                     citRevenue = contractorNet / denomCit;
                     citTax = citRevenue * rCit;
-
-                    // VAT Gross-up
                     vatRevenue = citRevenue / denomVat;
                     vatTax = vatRevenue * rVat;
-
                     cdtTotalCost = vatRevenue;
                     totalTax = citTax + vatTax;
                 } else {
-                    // Gross to Net Calculation (Direct Method)
                     cdtTotalCost = inputNum;
-                    
                     vatRevenue = cdtTotalCost;
                     vatTax = vatRevenue * rVat;
-
                     citRevenue = vatRevenue - vatTax;
                     citTax = citRevenue * rCit;
-
                     totalTax = vatTax + citTax;
                     contractorNet = cdtTotalCost - totalTax;
                 }
             }
 
-            // Bind values to UI
             document.getElementById('fct-res-cit-revenue').textContent = Math.round(citRevenue).toLocaleString('vi-VN') + " ₫";
             document.getElementById('fct-res-cit-tax').textContent = Math.round(citTax).toLocaleString('vi-VN') + " ₫";
             
@@ -1370,7 +1421,6 @@
             document.getElementById('fct-res-total-tax').textContent = Math.round(totalTax).toLocaleString('vi-VN') + " ₫";
             document.getElementById('fct-res-cdt-cost').textContent = Math.round(cdtTotalCost).toLocaleString('vi-VN') + " ₫";
 
-            // Render words representation of total tax
             const roundedTax = Math.round(totalTax);
             document.getElementById('fct-res-words-vi').textContent = convertToVietnameseWords(roundedTax.toString(), "north", false, "đồng chẵn");
             document.getElementById('fct-res-words-en').textContent = convertToEnglishWords(roundedTax.toString(), false, "Vietnam dongs only");
@@ -1379,7 +1429,7 @@
         function copyFctResult() {
             const rawAmount = document.getElementById('fct-amount').value;
             if (!rawAmount || rawAmount === "0") {
-                showToast("Chưa có số liệu thuế FCT để sao chép!");
+                showToast("Không có số liệu thuế FCT để sao chép!");
                 return;
             }
 
@@ -1398,23 +1448,23 @@
 
             const summaryText = `BÁO CÁO PHÂN TÍCH THUẾ NHÀ THẦU NƯỚC NGOÀI (FCT)
 -----------------------------------------------
-* Loại hợp đồng: ${method}
+* Phương thức hạch toán: ${method}
 * Lĩnh vực hoạt động: ${sector}
-* Giá trị nhập vào: ${rawAmount} VND
+* Giá trị đầu vào: ${rawAmount} VND
 
-CHI TIẾT PHÂN RÃ THUẾ:
+CHI TIẾT PHÂN RÃ CƠ CẤU THUẾ:
 1. Thuế TNDN (CIT):
    - Doanh thu tính thuế CIT: ${citRevenue}
-   - Thuế CIT khấu trừ: ${citTax}
+   - Tiền thuế CIT khấu trừ: ${citTax}
 2. Thuế GTGT (VAT):
    - Doanh thu tính thuế VAT: ${vatRevenue}
-   - Thuế VAT khấu trừ: ${vatTax}
+   - Tiền thuế VAT khấu trừ: ${vatTax}
 
-KẾT LUẬN DÒNG TIỀN:
-- Thực nhận của Nhà thầu (Net): ${contractorGet}
-- Tổng thuế FCT phải nộp nhà nước: ${totalTax}
+KẾT LUẬN DÒNG TIỀN DỰ ÁN:
+- Nhà thầu nước ngoài thực nhận (Net): ${contractorGet}
+- Tổng thuế FCT thực nộp ngân sách: ${totalTax}
 - Tổng chi phí thực tế CĐT ghi nhận: ${cdtCost}
-- Bằng chữ (Tiền thuế FCT): ${wordsVi}`;
+- Đọc bằng chữ (Tiền thuế FCT): ${wordsVi}`;
 
             const tempInput = document.createElement("textarea");
             tempInput.value = summaryText;
@@ -1423,7 +1473,7 @@ KẾT LUẬN DÒNG TIỀN:
             document.execCommand('copy');
             document.body.removeChild(tempInput);
 
-            showToast("Đã copy toàn bộ báo cáo FCT!");
+            showToast("Đã sao chép toàn bộ báo cáo phân rã FCT!");
         }
 
         // ================= TAB 4: CURRENCY EXCHANGE RATE LOGIC =================
@@ -1433,7 +1483,6 @@ KẾT LUẬN DÒNG TIỀN:
             const rateValStr = document.getElementById('exchange-rate-val').value.replace(/,/g, '');
             const sourceValStr = document.getElementById('exchange-source-val').value.replace(/,/g, '');
 
-            // Format inputs nicely
             document.getElementById('exchange-rate-val').value = formatNumberWithCommas(document.getElementById('exchange-rate-val').value);
             document.getElementById('exchange-source-val').value = formatNumberWithCommas(document.getElementById('exchange-source-val').value);
 
@@ -1441,10 +1490,10 @@ KẾT LUẬN DÒNG TIỀN:
             const sourceBadge = document.getElementById('badge-exchange-source');
             
             if (direction === 'usd-to-vnd') {
-                sourceLabel.textContent = "Số tiền nguồn (USD)";
+                sourceLabel.textContent = "Số tiền ngoại tệ nguồn (USD)";
                 sourceBadge.textContent = "USD";
             } else {
-                sourceLabel.textContent = "Số tiền nguồn (VND)";
+                sourceLabel.textContent = "Số tiền nội tệ nguồn (VND)";
                 sourceBadge.textContent = "VND";
             }
 
@@ -1478,7 +1527,7 @@ KẾT LUẬN DÒNG TIỀN:
             }
         }
 
-        function copyExchangeResult(lang) {
+        function copyExchangeResult(lang, buttonElement) {
             let textToCopy = "";
             if (lang === 'vi') {
                 textToCopy = document.getElementById('exchange-res-words-vi').textContent;
@@ -1487,7 +1536,7 @@ KẾT LUẬN DÒNG TIỀN:
             }
 
             if (textToCopy === "Không đồng chẵn." || textToCopy === "Zero.") {
-                showToast("Chưa có kết quả để copy!");
+                showToast("Chưa có kết quả quy đổi để sao chép!");
                 return;
             }
 
@@ -1498,19 +1547,27 @@ KẾT LUẬN DÒNG TIỀN:
             document.execCommand('copy');
             document.body.removeChild(tempInput);
 
-            showToast("Đã copy chữ quy đổi thành công!");
+            showToast("Đã sao chép cách đọc tiền quy đổi!");
+
+            // Animated feedback on target button
+            if (buttonElement) {
+                const originalText = buttonElement.querySelector('span').textContent;
+                buttonElement.querySelector('span').textContent = 'Đã sao chép!';
+                buttonElement.classList.add('border-indigo-500', 'text-indigo-500');
+                setTimeout(() => {
+                    buttonElement.querySelector('span').textContent = originalText;
+                    buttonElement.classList.remove('border-indigo-500', 'text-indigo-500');
+                }, 1500);
+            }
         }
 
-        // Global Rate Syncing
         function updateAllCalculations() {
             const globalRate = document.getElementById('global-usd-rate').value;
             document.getElementById('exchange-rate-val').value = globalRate;
             updateCurrencyExchange();
         }
 
-        // Initial setup on window load
         window.onload = function () {
-            // Focus input to let user use it right away
             document.getElementById('num-input').focus();
             updateAllCalculations();
             calculateFct();
