@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartAcc - Trợ Lý Kế Toán Dự Án</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Be Vietnam Pro', 'Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Smooth Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        /* Custom styles for animations */
+        .toast-active {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+
+    <!-- Header Section -->
+    <header class="bg-slate-900 text-white shadow-md border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="p-2.5 bg-indigo-600 rounded-xl shadow-lg shadow-indigo-500/30">
+                    <!-- Ledger Icon SVG -->
+                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight flex items-center gap-2">
+                        SmartAcc <span class="text-xs bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 px-2 py-0.5 rounded font-mono">v1.3</span>
+                    </h1>
+                    <p class="text-xs text-slate-400">Trợ lý tiện ích tối ưu cho Kế toán Dự án</p>
+                </div>
+            </div>
+            
+            <!-- Quick Currency Ticker & Stats -->
+            <div class="flex flex-wrap items-center gap-3 text-xs sm:text-sm">
+                <div class="bg-slate-800/80 border border-slate-700/50 rounded-lg px-3 py-1.5 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span class="text-slate-300 font-medium">Tỷ giá tham chiếu USD/VND:</span>
+                    <input type="text" id="global-usd-rate" value="25.450" class="w-16 bg-transparent text-emerald-400 font-bold border-b border-dashed border-slate-600 text-center focus:outline-none focus:border-emerald-400" oninput="updateAllCalculations()">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Navigation Bar -->
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex space-x-1 py-1.5 overflow-x-auto">
+                <button onclick="switchTab('tab-convert')" id="btn-tab-convert" class="nav-tab active flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 bg-indigo-50 text-indigo-700">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 11.37 7.31 16.5 3 19"></path></svg>
+                    Đọc Số Thành Chữ
+                </button>
+                <button onclick="switchTab('tab-vat')" id="btn-tab-vat" class="nav-tab flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l2-2 4 4m0-7l-3-3-3 3m2 8h7a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h3"></path></svg>
+                    Tính Thuế & VAT
+                </button>
+                <button onclick="switchTab('tab-fct')" id="btn-tab-fct" class="nav-tab flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                    Thuế Nhà Thầu (FCT)
+                </button>
+                <button onclick="switchTab('tab-rates')" id="btn-tab-rates" class="nav-tab flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Quy Đổi Dự Án
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Grid -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        
+        <!-- ================= TAB 1: ĐỌC SỐ THÀNH CHỮ ================= -->
+        <div id="tab-convert" class="tab-content space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <!-- Left Input Panel -->
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-5">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                            <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-indigo-600"></span>
+                                Nhập Số Tiền Cần Đọc
+                            </h3>
+                            <button onclick="clearConvertInput()" class="text-xs text-slate-400 hover:text-red-500 transition-colors flex items-center gap-1 font-medium">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                Xoá trắng
+                            </button>
+                        </div>
+
+                        <!-- Number Input Field -->
+                        <div class="space-y-2">
+                            <label for="num-input" class="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Số tiền bằng số</label>
+                            <div class="relative">
+                                <input type="text" id="num-input" placeholder="Nhập số tiền..." class="w-full text-xl font-bold font-mono tracking-tight text-slate-900 pl-4 pr-12 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition-all placeholder:text-slate-300 placeholder:font-sans" oninput="formatAndConvert(this)">
+                                <div class="absolute right-3 top-3.5 text-slate-400 font-semibold text-sm select-none" id="input-unit-badge">VND</div>
+                            </div>
+                            <div id="live-formatted-preview" class="text-xs font-mono text-indigo-600 font-semibold pl-1 min-h-[16px]"></div>
+                        </div>
+
+                        <!-- Configuration Options -->
+                        <div class="space-y-4 pt-2 border-t border-slate-100">
+                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Cấu hình Đọc Số Tiếng Việt</h4>
+                            
+                            <!-- Regional Dialect Toggle -->
+                            <div class="grid grid-cols-2 gap-2">
+                                <label class="border border-slate-200 rounded-xl p-3 flex flex-col gap-1 cursor-pointer hover:border-indigo-300 transition-all [&:has(input:checked)]:border-indigo-600 [&:has(input:checked)]:bg-indigo-50/30">
+                                    <div class="flex items-center gap-2">
+                                        <input type="radio" name="dialect" value="north" checked class="w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-500" onchange="runConversion()">
+                                        <span class="text-xs font-bold text-slate-700">Kiểu Miền Bắc</span>
+                                    </div>
+                                    <span class="text-[10px] text-slate-400 pl-6">Sử dụng: "Nghìn", "Linh"</span>
+                                </label>
+                                <label class="border border-slate-200 rounded-xl p-3 flex flex-col gap-1 cursor-pointer hover:border-indigo-300 transition-all [&:has(input:checked)]:border-indigo-600 [&:has(input:checked)]:bg-indigo-50/30">
+                                    <div class="flex items-center gap-2">
+                                        <input type="radio" name="dialect" value="south" class="w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-500" onchange="runConversion()">
+                                        <span class="text-xs font-bold text-slate-700">Kiểu Miền Nam</span>
+                                    </div>
+                                    <span class="text-[10px] text-slate-400 pl-6">Sử dụng: "Ngàn", "Lẻ"</span>
+                                </label>
+                            </div>
+
+                            <!-- Currency Suffix Options -->
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-500 mb-1.5">Hậu tố tiền tệ (VIET)</label>
+                                    <select id="vn-currency-suffix" class="w-full bg-slate-50 border border-slate-200 text-xs rounded-lg p-2 focus:ring-2 focus:ring-indigo-200 focus:outline-none" onchange="runConversion()">
+                                        <option value="đồng chẵn">đồng chẵn</option>
+                                        <option value="đồng">đồng</option>
+                                        <option value="đồng y">đồng y</option>
+                                        <option value="đô la Mỹ">đô la Mỹ</option>
+                                        <option value="Euro">Euro</option>
+                                        <option value="">Không kèm hậu tố</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-500 mb-1.5">Hậu tố tiền tệ (ENG)</label>
+                                    <select id="en-currency-suffix" class="w-full bg-slate-50 border border-slate-200 text-xs rounded-lg p-2 focus:ring-2 focus:ring-indigo-200 focus:outline-none" onchange="runConversion()">
+                                        <option value="Vietnam dongs only">Vietnam dongs only</option>
+                                        <option value="US Dollars only">US Dollars only</option>
+                                        <option value="Euros only">Euros only</option>
+                                        <option value="dongs">dongs</option>
+                                        <option value="dollars">dollars</option>
+                                        <option value="">No suffix</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Text Formatting Options -->
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 mb-1.5">Định dạng chữ cái</label>
+                                <div class="grid grid-cols-3 gap-1.5 text-xs">
+                                    <label class="border border-slate-200 rounded-lg p-2 text-center cursor-pointer hover:border-slate-300 [&:has(input:checked)]:border-indigo-600 [&:has(input:checked)]:text-indigo-600 [&:has(input:checked)]:bg-indigo-50/20">
+                                        <input type="radio" name="text-case" value="sentence" checked class="hidden" onchange="runConversion()">
+                                        Viết hoa đầu
+                                    </label>
+                                    <label class="border border-slate-200 rounded-lg p-2 text-center cursor-pointer hover:border-slate-300 [&:has(input:checked)]:border-indigo-600 [&:has(input:checked)]:text-indigo-600 [&:has(input:checked)]:bg-indigo-50/20">
+                                        <input type="radio" name="text-case" value="upper" class="hidden" onchange="runConversion()">
+                                        VIẾT HOA HẾT
+                                    </label>
+                                    <label class="border border-slate-200 rounded-lg p-2 text-center cursor-pointer hover:border-slate-300 [&:has(input:checked)]:border-indigo-600 [&:has(input:checked)]:text-indigo-600 [&:has(input:checked)]:bg-indigo-50/20">
+                                        <input type="radio" name="text-case" value="lower" class="hidden" onchange="runConversion()">
+                                        viết thường
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Decimal setting -->
+                        <div class="flex items-center justify-between border-t border-slate-100 pt-3 text-xs">
+                            <span class="font-semibold text-slate-500">Cho phép số lẻ (thập phân)</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="allow-decimal" checked class="sr-only peer" onchange="runConversion()">
+                                <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Output Panel -->
+                <div class="lg:col-span-7 space-y-6">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col h-full justify-between">
+                        <div class="space-y-6">
+                            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-indigo-600"></span>
+                                    Kết Quả Chuyển Đổi Song Ngữ
+                                </h3>
+                                <span class="text-xs bg-slate-100 text-slate-600 font-semibold px-2 py-1 rounded-md" id="status-badge">Đang đợi số liệu...</span>
+                            </div>
+
+                            <!-- Vietnamese Output Card -->
+                            <div class="space-y-2 bg-indigo-50/30 rounded-xl p-5 border border-indigo-100/50">
+                                <div class="flex justify-between items-center">
+                                    <div class="flex items-center gap-2 text-xs font-bold text-indigo-700 tracking-wider uppercase">
+                                        <span class="w-1.5 h-3 bg-indigo-600 rounded-full"></span>
+                                        Tiếng Việt (Vietnamese)
+                                    </div>
+                                    <button onclick="copyToClipboard('vi-output')" class="flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-800 font-semibold bg-white px-2.5 py-1 rounded-md border border-indigo-200 hover:border-indigo-400 shadow-sm transition-all">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                                        Copy
+                                    </button>
+                                </div>
+                                <div id="vi-output" class="text-base font-medium text-slate-800 leading-relaxed min-h-[48px] select-all pt-2">Vui lòng nhập số tiền để đọc.</div>
+                            </div>
+
+                            <!-- English Output Card -->
+                            <div class="space-y-2 bg-emerald-50/20 rounded-xl p-5 border border-emerald-100/50">
+                                <div class="flex justify-between items-center">
+                                    <div class="flex items-center gap-2 text-xs font-bold text-emerald-700 tracking-wider uppercase">
+                                        <span class="w-1.5 h-3 bg-emerald-600 rounded-full"></span>
+                                        Tiếng Anh (English)
+                                    </div>
+                                    <button onclick="copyToClipboard('en-output')" class="flex items-center gap-1 text-xs text-emerald-600 hover:text-emerald-800 font-semibold bg-white px-2.5 py-1 rounded-md border border-emerald-200 hover:border-emerald-400 shadow-sm transition-all">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                                        Copy
+                                    </button>
+                                </div>
+                                <div id="en-output" class="text-base font-medium text-slate-800 leading-relaxed min-h-[48px] select-all pt-2">Please enter an amount to read.</div>
+                            </div>
+                        </div>
+
+                        <!-- Mini quick instructions helper for contract -->
+                        <div class="mt-6 border-t border-slate-100 pt-4 flex gap-3 items-start text-xs text-slate-400">
+                            <svg class="w-5 h-5 text-indigo-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <div>
+                                <span class="font-bold text-slate-600">Mẹo kế toán:</span> Bạn có thể đổi nhanh hậu tố tiền tệ để khớp với các điều khoản thanh toán trong Hợp đồng kinh tế của dự án. Nhấn <kbd class="px-1.5 py-0.5 bg-slate-100 border border-slate-200 rounded text-slate-600 font-mono font-bold">Copy</kbd> để sao chép thẳng kết quả vào Excel hoặc Word mà không lo lỗi khoảng trắng.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Session Conversion History -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+                    <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        Lịch Sử Chuyển Đổi Trong Phiên
+                    </h3>
+                    <button onclick="clearHistory()" class="text-xs text-slate-400 hover:text-red-500 transition-colors font-medium">Xoá lịch sử</button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="text-slate-400 font-semibold uppercase tracking-wider border-b border-slate-100">
+                                <th class="pb-3 w-1/5">Thời gian</th>
+                                <th class="pb-3 w-1/5">Số tiền bằng số</th>
+                                <th class="pb-3 w-3/5">Đọc Tiếng Việt</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-rows" class="divide-y divide-slate-100 font-medium text-slate-700">
+                            <!-- Rows will be injected by JavaScript -->
+                            <tr id="empty-history-row">
+                                <td colspan="3" class="py-4 text-center text-slate-400">Chưa có lịch sử chuyển đổi nào trong phiên này.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 2: TÍNH THUẾ & VAT ================= -->
+        <div id="tab-vat" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="text-lg font-bold text-slate-900 border-b border-slate-100 pb-4 mb-6 flex items-center gap-2">
+                    <span class="p-1.5 bg-emerald-50 rounded-lg text-emerald-600">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l2-2 4 4m0-7l-3-3-3 3m2 8h7a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h3"></path></svg>
+                    </span>
+                    Bảng Tính Nhanh Thuế Suất Dự Án (Hai Chiều)
+                </h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+                    <!-- Calculator Inputs -->
+                    <div class="md:col-span-5 space-y-5">
+                        
+                        <!-- Direction Selection -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Phương thức tính thuế</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <label class="border border-slate-200 rounded-xl p-3 flex flex-col gap-1 cursor-pointer hover:border-indigo-300 transition-all [&:has(input:checked)]:border-indigo-600 [&:has(input:checked)]:bg-indigo-50/30">
+                                    <div class="flex items-center gap-2">
+                                        <input type="radio" name="vat-direction" value="forward" checked class="w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-500" onchange="toggleVatDirection()">
+                                        <span class="text-xs font-bold text-slate-700">Giá Trước Thuế (Net)</span>
+                                    </div>
+                                    <span class="text-[10px] text-slate-400 pl-6">Tính thêm thuế VAT từ Net</span>
+                                </label>
+                                <label class="border border-slate-200 rounded-xl p-3 flex flex-col gap-1 cursor-pointer hover:border-indigo-300 transition-all [&:has(input:checked)]:border-indigo-600 [&:has(input:checked)]:bg-indigo-50/30">
+                                    <div class="flex items-center gap-2">
+                                        <input type="radio" name="vat-direction" value="backward" class="w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-500" onchange="toggleVatDirection()">
+                                        <span class="text-xs font-bold text-slate-700">Giá Sau Thuế (Gross)</span>
+                                    </div>
+                                    <span class="text-[10px] text-slate-400 pl-6">Trích ngược thuế từ tổng số tiền</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Value inputs -->
+                        <div class="space-y-4">
+                            <!-- Net Input (Before Tax) -->
+                            <div id="container-net" class="space-y-1">
+                                <label for="vat-net" class="block text-xs font-semibold text-slate-500">Doanh số chưa thuế (Giá NET)</label>
+                                <div class="relative">
+                                    <input type="text" id="vat-net" placeholder="Nhập giá trước thuế..." class="w-full text-base font-bold font-mono text-slate-900 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 transition-all" oninput="calculateVat('net')">
+                                    <span class="absolute right-3 top-3 text-xs text-slate-400 font-bold select-none">VND</span>
+                                </div>
+                            </div>
+
+                            <!-- VAT Rate -->
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 mb-2">Thuế suất VAT (%)</label>
+                                <div class="grid grid-cols-4 gap-2">
+                                    <button onclick="setVatRate(5)" id="btn-vat-5" class="py-2 border border-slate-200 rounded-lg text-xs font-bold hover:bg-indigo-50 hover:border-indigo-200 transition-all">5%</button>
+                                    <button onclick="setVatRate(8)" id="btn-vat-8" class="py-2 border border-indigo-200 bg-indigo-50 rounded-lg text-xs font-bold text-indigo-600 shadow-sm transition-all">8%</button>
+                                    <button onclick="setVatRate(10)" id="btn-vat-10" class="py-2 border border-slate-200 rounded-lg text-xs font-bold hover:bg-indigo-50 hover:border-indigo-200 transition-all">10%</button>
+                                    <div class="relative">
+                                        <input type="number" id="vat-custom-rate" value="10" min="0" max="100" placeholder="Tự nhập" class="w-full h-full text-center border border-slate-200 rounded-lg text-xs font-bold bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500" oninput="setVatCustomRate(this.value)">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Gross Input (After Tax) -->
+                            <div id="container-gross" class="space-y-1 opacity-50">
+                                <label for="vat-gross" class="block text-xs font-semibold text-slate-500">Tổng thanh toán gồm thuế (Giá GROSS)</label>
+                                <div class="relative">
+                                    <input type="text" id="vat-gross" disabled placeholder="Sẽ tự động tính..." class="w-full text-base font-bold font-mono text-slate-900 px-4 py-2.5 bg-slate-100 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 transition-all" oninput="calculateVat('gross')">
+                                    <span class="absolute right-3 top-3 text-xs text-slate-400 font-bold select-none">VND</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Calculator Outputs & Copy Summary -->
+                    <div class="md:col-span-7 bg-slate-50 border border-slate-200 rounded-2xl p-6 flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-200 pb-2">Bảng Phân Tích Cơ Cấu Dòng Tiền</h4>
+                            
+                            <div class="space-y-2.5">
+                                <div class="flex justify-between items-center text-sm py-1.5 border-b border-dashed border-slate-200">
+                                    <span class="text-slate-500">Giá trị trước thuế (NET):</span>
+                                    <span class="font-mono font-bold text-slate-900 text-base" id="res-net">0 ₫</span>
+                                </div>
+                                <div class="flex justify-between items-center text-sm py-1.5 border-b border-dashed border-slate-200">
+                                    <span class="text-slate-500 flex items-center gap-1">
+                                        Thuế VAT lũy tiến (<span id="res-rate-label">8%</span>):
+                                    </span>
+                                    <span class="font-mono font-semibold text-rose-600" id="res-vat-amount">0 ₫</span>
+                                </div>
+                                <div class="flex justify-between items-center text-base py-2.5 border-b border-slate-200">
+                                    <span class="font-bold text-slate-700">Tổng cộng (GROSS):</span>
+                                    <span class="font-mono font-extrabold text-indigo-700 text-lg" id="res-gross">0 ₫</span>
+                                </div>
+                            </div>
+
+                            <!-- Read Out in Words Section -->
+                            <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-2">
+                                <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Đọc số tiền tổng thanh toán bằng chữ:</div>
+                                <div id="res-words" class="text-xs font-medium text-slate-700 leading-relaxed italic">Không đồng chẵn.</div>
+                            </div>
+                        </div>
+
+                        <!-- Utility Buttons to export -->
+                        <div class="flex gap-2 mt-6">
+                            <button onclick="copyVatResult()" class="flex-grow flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs py-2.5 px-4 rounded-xl shadow-lg shadow-indigo-500/10 transition-all">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                                Sao chép chi tiết tính thuế
+                            </button>
+                            <button onclick="sendVatToReader()" class="bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 text-indigo-700 font-semibold text-xs py-2.5 px-4 rounded-xl transition-all flex items-center gap-1.5" title="Chuyển tổng tiền sang Tab đọc số tiền để tuỳ biến sâu hơn">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                                Đọc chuyên sâu
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 3: THUẾ NHÀ THẦU (FCT) ================= -->
+        <div id="tab-fct" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="text-lg font-bold text-slate-900 border-b border-slate-100 pb-4 mb-6 flex items-center gap-2">
+                    <span class="p-1.5 bg-indigo-50 rounded-lg text-indigo-600">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                    </span>
+                    Bảng Tính Thuế Nhà Thầu Nước Ngoài (FCT) - Thông tư 103/2014/TT-BTC
+                </h3>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <!-- Calculator Inputs -->
+                    <div class="lg:col-span-5 space-y-5">
+                        
+                        <!-- Contract Type / Method selection -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Loại hợp đồng ký kết</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <label class="border border-slate-200 rounded-xl p-3 flex flex-col gap-1 cursor-pointer hover:border-indigo-300 transition-all [&:has(input:checked)]:border-indigo-600 [&:has(input:checked)]:bg-indigo-50/30">
+                                    <div class="flex items-center gap-2">
+                                        <input type="radio" name="fct-method" value="net" checked class="w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-500" onchange="calculateFct()">
+                                        <span class="text-xs font-bold text-slate-700">Giá NET (CĐT nộp thuế)</span>
+                                    </div>
+                                    <span class="text-[10px] text-slate-400 pl-6">Gross-up (Quy đổi ngược lên Gross)</span>
+                                </label>
+                                <label class="border border-slate-200 rounded-xl p-3 flex flex-col gap-1 cursor-pointer hover:border-indigo-300 transition-all [&:has(input:checked)]:border-indigo-600 [&:has(input:checked)]:bg-indigo-50/30">
+                                    <div class="flex items-center gap-2">
+                                        <input type="radio" name="fct-method" value="gross" class="w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-500" onchange="calculateFct()">
+                                        <span class="text-xs font-bold text-slate-700">Giá GROSS (Nhà thầu chịu)</span>
+                                    </div>
+                                    <span class="text-[10px] text-slate-400 pl-6">Direct (Trực tiếp khấu trừ từ Gross)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Amount input -->
+                        <div class="space-y-1">
+                            <label for="fct-amount" class="block text-xs font-semibold text-slate-500" id="label-fct-amount">Giá trị thanh toán thực nhận (Net)</label>
+                            <div class="relative">
+                                <input type="text" id="fct-amount" placeholder="Nhập giá trị hợp đồng..." class="w-full text-base font-bold font-mono text-slate-900 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 transition-all" oninput="formatAndCalculateFct(this)">
+                                <span class="absolute right-3 top-3 text-xs text-slate-400 font-bold select-none">VND</span>
+                            </div>
+                        </div>
+
+                        <!-- Sector Selection (Preset Taxes) -->
+                        <div class="space-y-1">
+                            <label for="fct-sector" class="block text-xs font-semibold text-slate-500">Ngành nghề kinh doanh / Tỷ lệ thuế suất</label>
+                            <select id="fct-sector" class="w-full bg-slate-50 border border-slate-200 text-xs rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-200 focus:outline-none" onchange="handleFctSectorChange()">
+                                <option value="5-5">Dịch vụ, cho thuê thiết bị (VAT: 5%, TNDN: 5%)</option>
+                                <option value="3-2">Cung cấp hàng hoá kèm dịch vụ / Xây dựng lắp đặt kèm vật tư (VAT: 3%, TNDN: 2%)</option>
+                                <option value="5-2">Xây dựng, lắp đặt không bao thầu vật tư (VAT: 5%, TNDN: 2%)</option>
+                                <option value="2-1">Hoạt động thương mại, phân phối hàng hoá tại Việt Nam (VAT: 2%, TNDN: 1%)</option>
+                                <option value="0-10">Bản quyền, nhượng quyền, công nghệ (VAT: Miễn thuế, TNDN: 10%)</option>
+                                <option value="0-5">Lãi tiền vay, dịch vụ tài chính (VAT: Miễn thuế, TNDN: 5%)</option>
+                                <option value="custom">Tùy chọn khác (Tự cấu hình tỷ lệ %)</option>
+                            </select>
+                        </div>
+
+                        <!-- Specific Rates Row (Inputs) -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-1">
+                                <label for="fct-vat-rate" class="block text-xs font-semibold text-slate-500">Tỷ lệ thuế GTGT (%)</label>
+                                <input type="number" id="fct-vat-rate" value="5" disabled class="w-full text-sm font-bold font-mono text-slate-700 px-3 py-2 bg-slate-100 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-200" oninput="calculateFct()">
+                            </div>
+                            <div class="space-y-1">
+                                <label for="fct-cit-rate" class="block text-xs font-semibold text-slate-500">Tỷ lệ thuế TNDN (%)</label>
+                                <input type="number" id="fct-cit-rate" value="5" disabled class="w-full text-sm font-bold font-mono text-slate-700 px-3 py-2 bg-slate-100 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-200" oninput="calculateFct()">
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Calculator Outputs & Explanations -->
+                    <div class="lg:col-span-7 bg-slate-50 border border-slate-200 rounded-2xl p-6 flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-200 pb-2">Kết quả phân rã cơ cấu thuế nhà thầu</h4>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <!-- CIT Grid Card -->
+                                <div class="bg-white rounded-xl p-4 border border-slate-200 space-y-2">
+                                    <div class="text-[11px] font-bold text-indigo-600 tracking-wider uppercase flex items-center justify-between">
+                                        <span>Thuế TNDN (CIT)</span>
+                                        <span class="text-slate-400 font-mono" id="fct-cit-rate-badge">5%</span>
+                                    </div>
+                                    <div class="space-y-1">
+                                        <span class="text-[10px] text-slate-400 block">Doanh thu tính thuế TNDN:</span>
+                                        <span class="font-mono font-bold text-slate-800 text-sm" id="fct-res-cit-revenue">0 ₫</span>
+                                    </div>
+                                    <div class="space-y-1 border-t border-slate-100 pt-1.5">
+                                        <span class="text-[10px] text-slate-400 block">Số thuế TNDN khấu trừ:</span>
+                                        <span class="font-mono font-extrabold text-indigo-700 text-base" id="fct-res-cit-tax">0 ₫</span>
+                                    </div>
+                                </div>
+
+                                <!-- VAT Grid Card -->
+                                <div class="bg-white rounded-xl p-4 border border-slate-200 space-y-2">
+                                    <div class="text-[11px] font-bold text-emerald-600 tracking-wider uppercase flex items-center justify-between">
+                                        <span>Thuế GTGT (VAT)</span>
+                                        <span class="text-slate-400 font-mono" id="fct-vat-rate-badge">5%</span>
+                                    </div>
+                                    <div class="space-y-1">
+                                        <span class="text-[10px] text-slate-400 block">Doanh thu tính thuế GTGT:</span>
+                                        <span class="font-mono font-bold text-slate-800 text-sm" id="fct-res-vat-revenue">0 ₫</span>
+                                    </div>
+                                    <div class="space-y-1 border-t border-slate-100 pt-1.5">
+                                        <span class="text-[10px] text-slate-400 block">Số thuế GTGT khấu trừ:</span>
+                                        <span class="font-mono font-extrabold text-emerald-700 text-base" id="fct-res-vat-tax">0 ₫</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Summary rows -->
+                            <div class="space-y-2 bg-white rounded-xl p-4 border border-slate-200">
+                                <div class="flex justify-between items-center text-xs py-1 border-b border-dashed border-slate-100">
+                                    <span class="text-slate-500">Nhà thầu nước ngoài thực nhận (Net):</span>
+                                    <span class="font-mono font-bold text-slate-900" id="fct-res-contractor-get">0 ₫</span>
+                                </div>
+                                <div class="flex justify-between items-center text-xs py-1 border-b border-dashed border-slate-100">
+                                    <span class="text-slate-500">Tổng thuế FCT phải nộp (VAT + CIT):</span>
+                                    <span class="font-mono font-bold text-rose-600" id="fct-res-total-tax">0 ₫</span>
+                                </div>
+                                <div class="flex justify-between items-center text-sm py-1.5">
+                                    <span class="font-bold text-slate-700" id="label-fct-cdt-cost">Tổng chi phí dự án của CĐT (Gross-up):</span>
+                                    <span class="font-mono font-extrabold text-indigo-700 text-base" id="fct-res-cdt-cost">0 ₫</span>
+                                </div>
+                            </div>
+
+                            <!-- Reading Total Tax in Words -->
+                            <div class="bg-indigo-50/40 p-4 rounded-xl border border-indigo-100/50 space-y-1.5">
+                                <div class="text-[10px] font-bold text-indigo-700 uppercase tracking-wider flex items-center gap-1.5">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                    Đọc tổng số tiền thuế FCT bằng chữ (Dành cho Giấy nộp tiền NSNN)
+                                </div>
+                                <div class="space-y-1">
+                                    <p id="fct-res-words-vi" class="text-xs font-semibold text-slate-700 italic">Không đồng chẵn.</p>
+                                    <p id="fct-res-words-en" class="text-[11px] font-medium text-slate-500 italic">Zero dongs only.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action buttons -->
+                        <div class="flex gap-2 mt-6">
+                            <button onclick="copyFctResult()" class="flex-grow flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs py-2.5 px-4 rounded-xl shadow-lg shadow-indigo-500/10 transition-all">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                                Sao chép chi tiết thuế nhà thầu
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 4: QUY ĐỔI NGOẠI TỆ ================= -->
+        <div id="tab-rates" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="text-lg font-bold text-slate-900 border-b border-slate-100 pb-4 mb-6 flex items-center gap-2">
+                    <span class="p-1.5 bg-indigo-50 rounded-lg text-indigo-600">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </span>
+                    Bảng Quy Đổi Ngoại Tệ & Dòng Tiền Dự Án nhanh
+                </h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+                    <!-- Conversion Input Form -->
+                    <div class="md:col-span-6 space-y-5">
+                        <p class="text-sm text-slate-500 leading-relaxed">
+                            Công cụ hỗ trợ nhanh việc quy đổi ngân sách dự án (ví dụ: Tổng giá trị thiết bị USD sang VND hoặc ngược lại) dựa vào tỷ giá trực tiếp bạn muốn thiết lập.
+                        </p>
+
+                        <div class="space-y-4">
+                            <!-- Conversion Type -->
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Hướng quy đổi</label>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <label class="border border-slate-200 rounded-xl p-3 flex items-center gap-2 cursor-pointer hover:border-indigo-300 transition-all [&:has(input:checked)]:border-indigo-600 [&:has(input:checked)]:bg-indigo-50/30">
+                                        <input type="radio" name="currency-direction" value="usd-to-vnd" checked class="w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-500" onchange="updateCurrencyExchange()">
+                                        <div>
+                                            <span class="text-xs font-bold text-slate-700 block">USD → VND</span>
+                                            <span class="text-[9px] text-slate-400">Đổi Ngoại tệ sang Việt Nam Đồng</span>
+                                        </div>
+                                    </label>
+                                    <label class="border border-slate-200 rounded-xl p-3 flex items-center gap-2 cursor-pointer hover:border-indigo-300 transition-all [&:has(input:checked)]:border-indigo-600 [&:has(input:checked)]:bg-indigo-50/30">
+                                        <input type="radio" name="currency-direction" value="vnd-to-usd" class="w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-500" onchange="updateCurrencyExchange()">
+                                        <div>
+                                            <span class="text-xs font-bold text-slate-700 block">VND → USD</span>
+                                            <span class="text-[9px] text-slate-400">Đổi Nội tệ sang Đô la Mỹ</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Source Amount -->
+                            <div class="space-y-1">
+                                <label for="exchange-source-val" class="block text-xs font-semibold text-slate-500" id="label-exchange-source">Số tiền nguồn (USD)</label>
+                                <div class="relative">
+                                    <input type="text" id="exchange-source-val" placeholder="Nhập số tiền..." class="w-full text-base font-bold font-mono text-slate-900 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 transition-all" oninput="updateCurrencyExchange()">
+                                    <span class="absolute right-3 top-3 text-xs text-slate-400 font-bold select-none" id="badge-exchange-source">USD</span>
+                                </div>
+                            </div>
+
+                            <!-- Target Rate -->
+                            <div class="space-y-1">
+                                <label for="exchange-rate-val" class="block text-xs font-semibold text-slate-500">Tỷ giá quy định trong hợp đồng dự án</label>
+                                <div class="relative">
+                                    <input type="text" id="exchange-rate-val" value="25.450" class="w-full text-base font-bold font-mono text-slate-900 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 transition-all" oninput="updateCurrencyExchange()">
+                                    <span class="absolute right-3 top-3 text-xs text-slate-400 font-bold select-none">VND/USD</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Conversion Results -->
+                    <div class="md:col-span-6 bg-slate-50 border border-slate-200 rounded-2xl p-6 flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-200 pb-2">Giá Trị Sau Khi Quy Đổi</h4>
+                            
+                            <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-4">
+                                <div class="flex flex-col">
+                                    <span class="text-xs text-slate-400 font-medium">Số tiền đích nhận được:</span>
+                                    <span class="text-2xl font-mono font-black text-indigo-700 tracking-tight" id="exchange-res-num">0 ₫</span>
+                                </div>
+
+                                <div class="border-t border-dashed border-slate-200 pt-3">
+                                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Cách đọc bằng chữ Việt:</span>
+                                    <p id="exchange-res-words-vi" class="text-xs font-semibold text-slate-700 italic">Không đồng chẵn.</p>
+                                </div>
+
+                                <div class="border-t border-dashed border-slate-200 pt-3">
+                                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Cách đọc bằng chữ Anh (English):</span>
+                                    <p id="exchange-res-words-en" class="text-xs font-semibold text-slate-700 italic">Zero.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Buttons to act -->
+                        <div class="grid grid-cols-2 gap-3 mt-6">
+                            <button onclick="copyExchangeResult('vi')" class="bg-white border border-slate-200 hover:border-slate-300 text-slate-700 font-semibold text-xs py-2.5 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                                Copy Chữ Việt
+                            </button>
+                            <button onclick="copyExchangeResult('en')" class="bg-white border border-slate-200 hover:border-slate-300 text-slate-700 font-semibold text-xs py-2.5 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                                Copy Chữ Anh
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer Area -->
+    <footer class="bg-slate-900 border-t border-slate-800 text-slate-400 py-6 mt-auto text-xs text-center">
+        <div class="max-w-7xl mx-auto px-4 space-y-2">
+            <p class="font-medium">© 2026 SmartAcc. Thiết kế dành riêng cho Nghiệp vụ Kế toán & Quản lý Dự án.</p>
+            <p class="text-slate-500">Mọi phép toán chuyển khoản, quy đổi tỷ giá, quy đổi chữ viết tiền tệ đều được lập trình chính xác theo thông tư tài chính hiện hành.</p>
+        </div>
+    </footer>
+
+    <!-- Custom Toast Notification System -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300 ease-out bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-2 border border-slate-800">
+        <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+        <span class="text-xs font-semibold" id="toast-message">Đã sao chép nội dung thành công!</span>
+    </div>
+
+    <!-- JavaScript Functions Section -->
+    <script>
+        // Tab switching logic
+        function switchTab(tabId) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            // Show selected tab
+            document.getElementById(tabId).classList.remove('hidden');
+
+            // Deactivate all navigation tabs
+            document.querySelectorAll('.nav-tab').forEach(btn => {
+                btn.classList.remove('bg-indigo-50', 'text-indigo-700', 'active');
+                btn.classList.add('text-slate-600', 'hover:text-slate-900', 'hover:bg-slate-50');
+            });
+
+            // Activate current tab button
+            const activeBtn = document.getElementById(`btn-${tabId}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('text-slate-600', 'hover:text-slate-900', 'hover:bg-slate-50');
+                activeBtn.classList.add('bg-indigo-50', 'text-indigo-700', 'active');
+            }
+        }
+
+        // Custom non-blocking Toast feedback
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').textContent = message;
+            toast.classList.add('toast-active');
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            
+            setTimeout(() => {
+                toast.classList.remove('toast-active');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 2500);
+        }
+
+        // Copy functionality utilizing requested mechanism with fallback
+        function copyToClipboard(elementId) {
+            const textToCopy = document.getElementById(elementId).innerText;
+            if (textToCopy === "Vui lòng nhập số tiền để đọc." || textToCopy === "Please enter an amount to read.") {
+                showToast("Chưa có nội dung để copy!");
+                return;
+            }
+            
+            // Create a temporary hidden input to perform legacy execution command as requested by framework guardrails
+            const tempInput = document.createElement("textarea");
+            tempInput.value = textToCopy;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            try {
+                document.execCommand('copy');
+                showToast("Đã sao chép vào bộ nhớ tạm!");
+            } catch (err) {
+                showToast("Có lỗi xảy ra khi copy!");
+            }
+            document.body.removeChild(tempInput);
+        }
+
+        // ================= ALGORITHMS: NUMBERS TO WORDS =================
+
+        // VIETNAMESE conversion code
+        const unitsVN = ["", "nghìn", "triệu", "tỷ", "nghìn tỷ", "triệu tỷ", "tỷ tỷ"];
+        const digitsVN = ["không", "một", "hai", "ba", "bốn", "năm", "sáu", "bảy", "tám", "chín"];
+
+        function convertToVietnameseWords(numString, dialect = "north", allowDecimal = true, suffix = "đồng chẵn") {
+            // Normalize
+            numString = numString.trim().replace(/\s/g, '');
+            if (!numString || numString === "0") return "Không " + suffix;
+
+            // Handle decimal part
+            let mainPart = numString;
+            let decimalPart = "";
+            if (numString.includes(".")) {
+                const parts = numString.split(".");
+                mainPart = parts[0];
+                decimalPart = parts[1] || "";
+            } else if (numString.includes(",")) {
+                const parts = numString.split(",");
+                mainPart = parts[0];
+                decimalPart = parts[1] || "";
+            }
+
+            // Dialect adaptations
+            const nghinWord = (dialect === "north") ? "nghìn" : "ngàn";
+            const leWord = (dialect === "north") ? "linh" : "lẻ";
+
+            let result = "";
+
+            // Group core number in chunks of 3 digits
+            let cleanMain = mainPart.replace(/[^\d]/g, '');
+            if (!cleanMain) cleanMain = "0";
+            
+            // Process integer part
+            if (cleanMain === "0") {
+                result = "Không";
+            } else {
+                result = readLargeNumberVN(cleanMain, nghinWord, leWord);
+            }
+
+            // Process decimal part
+            if (allowDecimal && decimalPart.replace(/[^\d]/g, '') !== "") {
+                const cleanDec = decimalPart.replace(/[^\d]/g, '');
+                if (parseInt(cleanDec) > 0) {
+                    result += " phẩy";
+                    for (let char of cleanDec) {
+                        result += " " + digitsVN[parseInt(char)];
+                    }
+                }
+            }
+
+            // Append Vietnamese suffix
+            if (suffix) {
+                result += " " + suffix;
+            }
+
+            return cleanAndFormatText(result);
+        }
+
+        function readLargeNumberVN(numStr, nghinWord, leWord) {
+            // Remove leading zeros
+            numStr = numStr.replace(/^0+/, '');
+            if (numStr === "") return "";
+
+            let chunks = [];
+            while (numStr.length > 0) {
+                chunks.unshift(numStr.slice(-3));
+                numStr = numStr.slice(0, -3);
+            }
+
+            let words = [];
+            const chunkUnits = ["", nghinWord, "triệu", "tỷ", "nghìn tỷ", "triệu tỷ", "tỷ tỷ"];
+
+            for (let i = 0; i < chunks.length; i++) {
+                let chunkVal = parseInt(chunks[i]);
+                if (chunkVal === 0 && chunks.length > 1) {
+                    continue;
+                }
+                
+                let chunkWord = readGroupOfThreeVN(chunks[i], i === 0, leWord);
+                if (chunkWord) {
+                    let unitIndex = chunks.length - 1 - i;
+                    words.push(chunkWord + " " + (chunkUnits[unitIndex] || ""));
+                }
+            }
+
+            return words.join(" ").trim();
+        }
+
+        function readGroupOfThreeVN(chunk, isFirst, leWord) {
+            let val = parseInt(chunk);
+            let padded = chunk.padStart(3, '0');
+            
+            let tram = parseInt(padded[0]);
+            let chuc = parseInt(padded[1]);
+            let donVi = parseInt(padded[2]);
+
+            let out = "";
+
+            if (tram === 0 && chuc === 0 && donVi === 0) return "";
+
+            // Read Hundreds
+            if (!isFirst || tram > 0) {
+                out += digitsVN[tram] + " trăm ";
+            }
+
+            // Read Tens
+            if (chuc > 1) {
+                out += digitsVN[chuc] + " mươi ";
+            } else if (chuc === 1) {
+                out += "mười ";
+            } else if (chuc === 0 && donVi > 0) {
+                if (!isFirst || tram > 0) {
+                    out += leWord + " ";
+                }
+            }
+
+            // Read Units
+            if (donVi === 1 && chuc > 1) {
+                out += "mốt";
+            } else if (donVi === 5 && chuc > 0) {
+                out += "lăm";
+            } else if (donVi === 4 && chuc > 1) {
+                out += "tư"; // accounting preference
+            } else if (donVi > 0 || (donVi === 0 && chuc === 0 && tram === 0)) {
+                if (donVi > 0) {
+                    out += digitsVN[donVi];
+                }
+            }
+
+            return out.trim();
+        }
+
+
+        // ENGLISH conversion code
+        const onesEN = ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"];
+        const tensEN = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
+        const scalesEN = ["", "thousand", "million", "billion", "trillion", "quadrillion"];
+
+        function convertToEnglishWords(numString, allowDecimal = true, suffix = "Vietnam dongs only") {
+            numString = numString.trim().replace(/\s/g, '');
+            if (!numString || numString === "0") return "Zero " + suffix;
+
+            let mainPart = numString;
+            let decimalPart = "";
+            if (numString.includes(".")) {
+                const parts = numString.split(".");
+                mainPart = parts[0];
+                decimalPart = parts[1] || "";
+            } else if (numString.includes(",")) {
+                const parts = numString.split(",");
+                mainPart = parts[0];
+                decimalPart = parts[1] || "";
+            }
+
+            let cleanMain = mainPart.replace(/[^\d]/g, '');
+            if (!cleanMain) cleanMain = "0";
+
+            let result = "";
+
+            if (cleanMain === "0") {
+                result = "Zero";
+            } else {
+                result = readLargeNumberEN(cleanMain);
+            }
+
+            // Parse decimals (like cents)
+            if (allowDecimal && decimalPart.replace(/[^\d]/g, '') !== "") {
+                const cleanDec = decimalPart.replace(/[^\d]/g, '').slice(0, 2); // limit to 2 decimal places for cents
+                if (parseInt(cleanDec) > 0) {
+                    let decVal = parseInt(cleanDec);
+                    if (cleanDec.length === 1) decVal *= 10; // "0.5" means "50"
+                    
+                    let decWords = readGroupOfThreeEN(decVal);
+                    result += " and " + decWords;
+                    if (suffix.toLowerCase().includes("dollar")) {
+                        result += " cents";
+                    } else {
+                        result += " point";
+                        for (let char of cleanDec) {
+                            result += " " + onesEN[parseInt(char)];
+                        }
+                    }
+                }
+            }
+
+            if (suffix) {
+                result += " " + suffix;
+            }
+
+            return cleanAndFormatText(result);
+        }
+
+        function readLargeNumberEN(numStr) {
+            numStr = numStr.replace(/^0+/, '');
+            if (numStr === "") return "";
+
+            let chunks = [];
+            while (numStr.length > 0) {
+                chunks.unshift(numStr.slice(-3));
+                numStr = numStr.slice(0, -3);
+            }
+
+            let words = [];
+            for (let i = 0; i < chunks.length; i++) {
+                let chunkVal = parseInt(chunks[i]);
+                if (chunkVal === 0) continue;
+
+                let chunkWord = readGroupOfThreeEN(chunkVal);
+                let scaleIndex = chunks.length - 1 - i;
+                words.push(chunkWord + " " + (scalesEN[scaleIndex] || ""));
+            }
+
+            return words.join(" ").trim();
+        }
+
+        function readGroupOfThreeEN(num) {
+            let out = "";
+            if (num >= 100) {
+                out += onesEN[Math.floor(num / 100)] + " hundred ";
+                num %= 100;
+            }
+            if (num >= 20) {
+                out += tensEN[Math.floor(num / 10)] + " ";
+                num %= 10;
+                if (num > 0) {
+                    out = out.trim() + "-" + onesEN[num] + " ";
+                }
+            } else if (num > 0) {
+                out += onesEN[num] + " ";
+            }
+            return out.trim();
+        }
+
+        // Formatting utilities
+        function cleanAndFormatText(str) {
+            // Clean up extra spaces
+            str = str.replace(/\s+/g, ' ').trim();
+            if (!str) return "";
+
+            // Get selected case
+            const selectedCase = document.querySelector('input[name="text-case"]:checked')?.value || 'sentence';
+
+            if (selectedCase === 'upper') {
+                return str.toUpperCase();
+            } else if (selectedCase === 'lower') {
+                return str.toLowerCase();
+            } else {
+                // Sentence Case (Capitalize first letter only)
+                return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+            }
+        }
+
+        // ================= INTERACTION LOGIC & EVENT HANDLERS =================
+
+        let historyList = [];
+
+        // Formatting currency visual with commas as user types
+        function formatNumberWithCommas(value) {
+            // Remove everything except numbers and decimal point
+            let cleaned = value.replace(/[^\d.]/g, '');
+            
+            // Allow only one decimal point
+            let parts = cleaned.split('.');
+            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            
+            if (parts.length > 1) {
+                return parts[0] + '.' + parts[1].slice(0, 4); // Limit decimal places to 4 for project math
+            }
+            return parts[0];
+        }
+
+        function formatAndConvert(inputElement) {
+            let rawValue = inputElement.value;
+            let formatted = formatNumberWithCommas(rawValue);
+            inputElement.value = formatted;
+
+            let numericString = formatted.replace(/,/g, '');
+            
+            // Update live helper preview below input
+            const preview = document.getElementById('live-formatted-preview');
+            if (numericString && !isNaN(numericString)) {
+                preview.textContent = "= " + parseFloat(numericString).toLocaleString('vi-VN', {maximumFractionDigits: 4}) + " VND / USD";
+            } else {
+                preview.textContent = "";
+            }
+
+            runConversion();
+        }
+
+        function runConversion() {
+            const inputVal = document.getElementById('num-input').value;
+            const numericString = inputVal.replace(/,/g, '');
+            
+            const dialect = document.querySelector('input[name="dialect"]:checked')?.value || 'north';
+            const vnSuffix = document.getElementById('vn-currency-suffix').value;
+            const enSuffix = document.getElementById('en-currency-suffix').value;
+            const allowDecimal = document.getElementById('allow-decimal').checked;
+
+            const viOutput = document.getElementById('vi-output');
+            const enOutput = document.getElementById('en-output');
+            const statusBadge = document.getElementById('status-badge');
+
+            if (!numericString || isNaN(numericString) || parseFloat(numericString) === 0) {
+                viOutput.innerText = "Vui lòng nhập số tiền để đọc.";
+                enOutput.innerText = "Please enter an amount to read.";
+                statusBadge.textContent = "Đang đợi số liệu...";
+                statusBadge.className = "text-xs bg-slate-100 text-slate-600 font-semibold px-2 py-1 rounded-md";
+                return;
+            }
+
+            const viText = convertToVietnameseWords(numericString, dialect, allowDecimal, vnSuffix);
+            const enText = convertToEnglishWords(numericString, allowDecimal, enSuffix);
+
+            viOutput.innerText = viText;
+            enOutput.innerText = enText;
+
+            statusBadge.textContent = "Đã dịch thành công";
+            statusBadge.className = "text-xs bg-emerald-100 text-emerald-800 font-semibold px-2 py-1 rounded-md";
+
+            // Push to session history debounce / threshold (add only completed conversions on inactivity)
+            addToHistoryDebounced(numericString, viText);
+        }
+
+        // Debounce history insertions so it doesn't log every keystroke
+        let historyTimeout;
+        function addToHistoryDebounced(num, txt) {
+            clearTimeout(historyTimeout);
+            historyTimeout = setTimeout(() => {
+                // Ensure we don't log duplicates consecutively
+                if (historyList.length > 0 && historyList[0].num === num) return;
+                
+                const timeStr = new Date().toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+                const historyItem = { time: timeStr, num: parseFloat(num).toLocaleString('vi-VN'), text: txt };
+                
+                historyList.unshift(historyItem);
+                if (historyList.length > 10) historyList.pop(); // keep last 10 entries
+                
+                renderHistory();
+            }, 1500);
+        }
+
+        function renderHistory() {
+            const rowsContainer = document.getElementById('history-rows');
+            const emptyRow = document.getElementById('empty-history-row');
+            
+            if (historyList.length === 0) {
+                if (emptyRow) emptyRow.style.display = 'table-row';
+                return;
+            }
+
+            if (emptyRow) emptyRow.style.display = 'none';
+
+            // Clear old non-empty rows
+            const oldRows = rowsContainer.querySelectorAll('.history-item-row');
+            oldRows.forEach(row => row.remove());
+
+            historyList.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.className = 'history-item-row border-b border-slate-100 hover:bg-slate-50 transition-colors duration-150';
+                tr.innerHTML = `
+                    <td class="py-3 text-slate-400 font-mono">${item.time}</td>
+                    <td class="py-3 font-mono text-indigo-600 font-bold">${item.num}</td>
+                    <td class="py-3 pr-2 text-slate-600">${item.text}</td>
+                `;
+                rowsContainer.appendChild(tr);
+            });
+        }
+
+        function clearHistory() {
+            historyList = [];
+            const rowsContainer = document.getElementById('history-rows');
+            const oldRows = rowsContainer.querySelectorAll('.history-item-row');
+            oldRows.forEach(row => row.remove());
+            document.getElementById('empty-history-row').style.display = 'table-row';
+            showToast("Đã dọn dẹp lịch sử phiên làm việc!");
+        }
+
+        function clearConvertInput() {
+            document.getElementById('num-input').value = "";
+            document.getElementById('live-formatted-preview').textContent = "";
+            runConversion();
+        }
+
+        // ================= TAB 2: VAT CALCULATOR LOGIC =================
+
+        let currentVatRate = 8;
+
+        function toggleVatDirection() {
+            const direction = document.querySelector('input[name="vat-direction"]:checked').value;
+            const netInput = document.getElementById('vat-net');
+            const grossInput = document.getElementById('vat-gross');
+            const netContainer = document.getElementById('container-net');
+            const grossContainer = document.getElementById('container-gross');
+
+            if (direction === 'forward') {
+                netInput.disabled = false;
+                netInput.focus();
+                grossInput.disabled = true;
+                netContainer.classList.remove('opacity-50');
+                grossContainer.classList.add('opacity-50');
+            } else {
+                netInput.disabled = true;
+                grossInput.disabled = false;
+                grossInput.focus();
+                netContainer.classList.add('opacity-50');
+                grossContainer.classList.remove('opacity-50');
+            }
+            calculateVat(direction === 'forward' ? 'net' : 'gross');
+        }
+
+        function setVatRate(rate) {
+            currentVatRate = rate;
+            
+            // Highlight buttons
+            document.querySelectorAll('[id^="btn-vat-"]').forEach(btn => {
+                btn.className = "py-2 border border-slate-200 rounded-lg text-xs font-bold hover:bg-indigo-50 hover:border-indigo-200 transition-all";
+            });
+            
+            const activeBtn = document.getElementById(`btn-vat-${rate}`);
+            if (activeBtn) {
+                activeBtn.className = "py-2 border border-indigo-200 bg-indigo-50 rounded-lg text-xs font-bold text-indigo-600 shadow-sm transition-all";
+            }
+
+            document.getElementById('vat-custom-rate').value = rate;
+            
+            const direction = document.querySelector('input[name="vat-direction"]:checked').value;
+            calculateVat(direction === 'forward' ? 'net' : 'gross');
+        }
+
+        function setVatCustomRate(val) {
+            let num = parseFloat(val);
+            if (isNaN(num) || num < 0) num = 0;
+            currentVatRate = num;
+
+            // Remove highlight of standard option buttons
+            document.querySelectorAll('[id^="btn-vat-"]').forEach(btn => {
+                btn.className = "py-2 border border-slate-200 rounded-lg text-xs font-bold hover:bg-indigo-50 hover:border-indigo-200 transition-all";
+            });
+
+            const direction = document.querySelector('input[name="vat-direction"]:checked').value;
+            calculateVat(direction === 'forward' ? 'net' : 'gross');
+        }
+
+        function calculateVat(triggerType) {
+            const direction = document.querySelector('input[name="vat-direction"]:checked').value;
+            const rateMultiplier = currentVatRate / 100;
+
+            let netVal = 0;
+            let grossVal = 0;
+            let vatVal = 0;
+
+            if (direction === 'forward') {
+                // Net to Gross
+                const inputVal = document.getElementById('vat-net').value.replace(/,/g, '');
+                document.getElementById('vat-net').value = formatNumberWithCommas(document.getElementById('vat-net').value);
+                
+                if (inputVal && !isNaN(inputVal)) {
+                    netVal = parseFloat(inputVal);
+                    vatVal = netVal * rateMultiplier;
+                    grossVal = netVal + vatVal;
+                    document.getElementById('vat-gross').value = formatNumberWithCommas(grossVal.toFixed(0));
+                } else {
+                    document.getElementById('vat-gross').value = "";
+                }
+            } else {
+                // Gross to Net
+                const inputVal = document.getElementById('vat-gross').value.replace(/,/g, '');
+                document.getElementById('vat-gross').value = formatNumberWithCommas(document.getElementById('vat-gross').value);
+                
+                if (inputVal && !isNaN(inputVal)) {
+                    grossVal = parseFloat(inputVal);
+                    netVal = grossVal / (1 + rateMultiplier);
+                    vatVal = grossVal - netVal;
+                    document.getElementById('vat-net').value = formatNumberWithCommas(netVal.toFixed(0));
+                } else {
+                    document.getElementById('vat-net').value = "";
+                }
+            }
+
+            // Render Output Table
+            document.getElementById('res-net').textContent = netVal.toLocaleString('vi-VN') + " ₫";
+            document.getElementById('res-vat-amount').textContent = vatVal.toLocaleString('vi-VN') + " ₫";
+            document.getElementById('res-gross').textContent = grossVal.toLocaleString('vi-VN') + " ₫";
+            document.getElementById('res-rate-label').textContent = currentVatRate + "%";
+
+            // Render Words reading in Output
+            const wordsText = convertToVietnameseWords(grossVal.toFixed(0), "north", false, "đồng chẵn");
+            document.getElementById('res-words').textContent = wordsText;
+        }
+
+        function copyVatResult() {
+            const net = document.getElementById('res-net').textContent;
+            const vatAmount = document.getElementById('res-vat-amount').textContent;
+            const gross = document.getElementById('res-gross').textContent;
+            const rate = document.getElementById('res-rate-label').textContent;
+            const words = document.getElementById('res-words').textContent;
+
+            const summary = `GIÁ TRỊ CHI TIẾT THANH TOÁN (VAT ${rate}):\n- Giá trị trước thuế (NET): ${net}\n- Thuế VAT (${rate}): ${vatAmount}\n- Tổng cộng thanh toán (GROSS): ${gross}\n- Bằng chữ: ${words}`;
+            
+            const tempInput = document.createElement("textarea");
+            tempInput.value = summary;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            showToast("Đã copy chi tiết cơ cấu thuế VAT!");
+        }
+
+        function sendVatToReader() {
+            const grossString = document.getElementById('res-gross').textContent.replace(/[^\d]/g, '');
+            if (!grossString || grossString === "0") {
+                showToast("Vui lòng nhập số tiền hợp lệ để đọc chuyên sâu!");
+                return;
+            }
+            switchTab('tab-convert');
+            const numInput = document.getElementById('num-input');
+            numInput.value = formatNumberWithCommas(grossString);
+            formatAndConvert(numInput);
+        }
+
+        // ================= TAB 3: FOREIGN CONTRACTOR TAX (FCT) LOGIC =================
+
+        function formatAndCalculateFct(element) {
+            let rawValue = element.value;
+            let formatted = formatNumberWithCommas(rawValue);
+            element.value = formatted;
+            calculateFct();
+        }
+
+        function handleFctSectorChange() {
+            const sector = document.getElementById('fct-sector').value;
+            const vatInput = document.getElementById('fct-vat-rate');
+            const citInput = document.getElementById('fct-cit-rate');
+            
+            if (sector === 'custom') {
+                vatInput.disabled = false;
+                citInput.disabled = false;
+                vatInput.classList.remove('bg-slate-100');
+                citInput.classList.remove('bg-slate-100');
+            } else {
+                vatInput.disabled = true;
+                citInput.disabled = true;
+                vatInput.classList.add('bg-slate-100');
+                citInput.classList.add('bg-slate-100');
+                
+                const [vat, cit] = sector.split('-').map(Number);
+                vatInput.value = vat;
+                citInput.value = cit;
+            }
+            calculateFct();
+        }
+
+        function calculateFct() {
+            const method = document.querySelector('input[name="fct-method"]:checked').value;
+            const amountInput = document.getElementById('fct-amount');
+            const rawAmount = amountInput.value.replace(/,/g, '');
+
+            const vatRate = parseFloat(document.getElementById('fct-vat-rate').value) || 0;
+            const citRate = parseFloat(document.getElementById('fct-cit-rate').value) || 0;
+
+            const labelFctAmount = document.getElementById('label-fct-amount');
+            const labelCdtCost = document.getElementById('label-fct-cdt-cost');
+
+            if (method === 'net') {
+                labelFctAmount.textContent = "Giá trị thanh toán thực nhận của nhà thầu (Net)";
+                labelCdtCost.textContent = "Tổng chi phí dự án của CĐT (Gross-up value):";
+            } else {
+                labelFctAmount.textContent = "Tổng giá trị hợp đồng gồm thuế (Gross)";
+                labelCdtCost.textContent = "Tổng giá trị hợp đồng (Gross value):";
+            }
+
+            // Update badges
+            document.getElementById('fct-cit-rate-badge').textContent = citRate + "%";
+            document.getElementById('fct-vat-rate-badge').textContent = vatRate + "%";
+
+            let contractorNet = 0;
+            let citRevenue = 0;
+            let citTax = 0;
+            let vatRevenue = 0;
+            let vatTax = 0;
+            let totalTax = 0;
+            let cdtTotalCost = 0;
+
+            const inputNum = parseFloat(rawAmount);
+
+            if (!isNaN(inputNum) && inputNum > 0) {
+                const rVat = vatRate / 100;
+                const rCit = citRate / 100;
+
+                const denomCit = (1 - rCit) === 0 ? 1 : (1 - rCit);
+                const denomVat = (1 - rVat) === 0 ? 1 : (1 - rVat);
+
+                if (method === 'net') {
+                    // Net to Gross Calculation (Gross-up Method)
+                    contractorNet = inputNum;
+                    
+                    // CIT Gross-up
+                    citRevenue = contractorNet / denomCit;
+                    citTax = citRevenue * rCit;
+
+                    // VAT Gross-up
+                    vatRevenue = citRevenue / denomVat;
+                    vatTax = vatRevenue * rVat;
+
+                    cdtTotalCost = vatRevenue;
+                    totalTax = citTax + vatTax;
+                } else {
+                    // Gross to Net Calculation (Direct Method)
+                    cdtTotalCost = inputNum;
+                    
+                    vatRevenue = cdtTotalCost;
+                    vatTax = vatRevenue * rVat;
+
+                    citRevenue = vatRevenue - vatTax;
+                    citTax = citRevenue * rCit;
+
+                    totalTax = vatTax + citTax;
+                    contractorNet = cdtTotalCost - totalTax;
+                }
+            }
+
+            // Bind values to UI
+            document.getElementById('fct-res-cit-revenue').textContent = Math.round(citRevenue).toLocaleString('vi-VN') + " ₫";
+            document.getElementById('fct-res-cit-tax').textContent = Math.round(citTax).toLocaleString('vi-VN') + " ₫";
+            
+            document.getElementById('fct-res-vat-revenue').textContent = Math.round(vatRevenue).toLocaleString('vi-VN') + " ₫";
+            document.getElementById('fct-res-vat-tax').textContent = Math.round(vatTax).toLocaleString('vi-VN') + " ₫";
+
+            document.getElementById('fct-res-contractor-get').textContent = Math.round(contractorNet).toLocaleString('vi-VN') + " ₫";
+            document.getElementById('fct-res-total-tax').textContent = Math.round(totalTax).toLocaleString('vi-VN') + " ₫";
+            document.getElementById('fct-res-cdt-cost').textContent = Math.round(cdtTotalCost).toLocaleString('vi-VN') + " ₫";
+
+            // Render words representation of total tax
+            const roundedTax = Math.round(totalTax);
+            document.getElementById('fct-res-words-vi').textContent = convertToVietnameseWords(roundedTax.toString(), "north", false, "đồng chẵn");
+            document.getElementById('fct-res-words-en').textContent = convertToEnglishWords(roundedTax.toString(), false, "Vietnam dongs only");
+        }
+
+        function copyFctResult() {
+            const rawAmount = document.getElementById('fct-amount').value;
+            if (!rawAmount || rawAmount === "0") {
+                showToast("Chưa có số liệu thuế FCT để sao chép!");
+                return;
+            }
+
+            const method = document.querySelector('input[name="fct-method"]:checked').value === 'net' ? "NET (Gross-up)" : "GROSS (Direct)";
+            const sector = document.getElementById('fct-sector').options[document.getElementById('fct-sector').selectedIndex].text;
+            
+            const citRevenue = document.getElementById('fct-res-cit-revenue').textContent;
+            const citTax = document.getElementById('fct-res-cit-tax').textContent;
+            const vatRevenue = document.getElementById('fct-res-vat-revenue').textContent;
+            const vatTax = document.getElementById('fct-res-vat-tax').textContent;
+            
+            const contractorGet = document.getElementById('fct-res-contractor-get').textContent;
+            const totalTax = document.getElementById('fct-res-total-tax').textContent;
+            const cdtCost = document.getElementById('fct-res-cdt-cost').textContent;
+            const wordsVi = document.getElementById('fct-res-words-vi').textContent;
+
+            const summaryText = `BÁO CÁO PHÂN TÍCH THUẾ NHÀ THẦU NƯỚC NGOÀI (FCT)
+-----------------------------------------------
+* Loại hợp đồng: ${method}
+* Lĩnh vực hoạt động: ${sector}
+* Giá trị nhập vào: ${rawAmount} VND
+
+CHI TIẾT PHÂN RÃ THUẾ:
+1. Thuế TNDN (CIT):
+   - Doanh thu tính thuế CIT: ${citRevenue}
+   - Thuế CIT khấu trừ: ${citTax}
+2. Thuế GTGT (VAT):
+   - Doanh thu tính thuế VAT: ${vatRevenue}
+   - Thuế VAT khấu trừ: ${vatTax}
+
+KẾT LUẬN DÒNG TIỀN:
+- Thực nhận của Nhà thầu (Net): ${contractorGet}
+- Tổng thuế FCT phải nộp nhà nước: ${totalTax}
+- Tổng chi phí thực tế CĐT ghi nhận: ${cdtCost}
+- Bằng chữ (Tiền thuế FCT): ${wordsVi}`;
+
+            const tempInput = document.createElement("textarea");
+            tempInput.value = summaryText;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            showToast("Đã copy toàn bộ báo cáo FCT!");
+        }
+
+        // ================= TAB 4: CURRENCY EXCHANGE RATE LOGIC =================
+
+        function updateCurrencyExchange() {
+            const direction = document.querySelector('input[name="currency-direction"]:checked').value;
+            const rateValStr = document.getElementById('exchange-rate-val').value.replace(/,/g, '');
+            const sourceValStr = document.getElementById('exchange-source-val').value.replace(/,/g, '');
+
+            // Format inputs nicely
+            document.getElementById('exchange-rate-val').value = formatNumberWithCommas(document.getElementById('exchange-rate-val').value);
+            document.getElementById('exchange-source-val').value = formatNumberWithCommas(document.getElementById('exchange-source-val').value);
+
+            const sourceLabel = document.getElementById('label-exchange-source');
+            const sourceBadge = document.getElementById('badge-exchange-source');
+            
+            if (direction === 'usd-to-vnd') {
+                sourceLabel.textContent = "Số tiền nguồn (USD)";
+                sourceBadge.textContent = "USD";
+            } else {
+                sourceLabel.textContent = "Số tiền nguồn (VND)";
+                sourceBadge.textContent = "VND";
+            }
+
+            const rate = parseFloat(rateValStr);
+            const source = parseFloat(sourceValStr);
+
+            const numOut = document.getElementById('exchange-res-num');
+            const wordVi = document.getElementById('exchange-res-words-vi');
+            const wordEn = document.getElementById('exchange-res-words-en');
+
+            if (isNaN(rate) || isNaN(source) || source <= 0) {
+                numOut.textContent = direction === 'usd-to-vnd' ? "0 ₫" : "$0.00";
+                wordVi.textContent = "Không đồng chẵn.";
+                wordEn.textContent = "Zero.";
+                return;
+            }
+
+            let result = 0;
+            if (direction === 'usd-to-vnd') {
+                result = source * rate;
+                const roundedResult = result.toFixed(0);
+                numOut.textContent = parseFloat(roundedResult).toLocaleString('vi-VN') + " ₫";
+                wordVi.textContent = convertToVietnameseWords(roundedResult, "north", false, "đồng chẵn");
+                wordEn.textContent = convertToEnglishWords(roundedResult, false, "Vietnam dongs only");
+            } else {
+                result = source / rate;
+                const roundedResult = result.toFixed(2);
+                numOut.textContent = "$" + parseFloat(roundedResult).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                wordVi.textContent = convertToVietnameseWords(roundedResult, "north", true, "đô la Mỹ");
+                wordEn.textContent = convertToEnglishWords(roundedResult, true, "US Dollars only");
+            }
+        }
+
+        function copyExchangeResult(lang) {
+            let textToCopy = "";
+            if (lang === 'vi') {
+                textToCopy = document.getElementById('exchange-res-words-vi').textContent;
+            } else {
+                textToCopy = document.getElementById('exchange-res-words-en').textContent;
+            }
+
+            if (textToCopy === "Không đồng chẵn." || textToCopy === "Zero.") {
+                showToast("Chưa có kết quả để copy!");
+                return;
+            }
+
+            const tempInput = document.createElement("textarea");
+            tempInput.value = textToCopy;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            showToast("Đã copy chữ quy đổi thành công!");
+        }
+
+        // Global Rate Syncing
+        function updateAllCalculations() {
+            const globalRate = document.getElementById('global-usd-rate').value;
+            document.getElementById('exchange-rate-val').value = globalRate;
+            updateCurrencyExchange();
+        }
+
+        // Initial setup on window load
+        window.onload = function () {
+            // Focus input to let user use it right away
+            document.getElementById('num-input').focus();
+            updateAllCalculations();
+            calculateFct();
+        }
+    </script>
+</body>
+</html>
